@@ -1,0 +1,11 @@
+$Id: Changelog,v 1.1 2004-08-20 13:53:42 oops Exp $
+
+PHP filebin Extensoin Changelog
+
+* 1.0.0
+--------------------------------------------------------------------------------
+
+* Wed Aug 21 2004 JoungKyun Kim <http://www.oops.org>
+- build file extension with file 4.07 package
+- added korean document
+
