@@ -1,4 +1,4 @@
-dnl $Id: config.m4,v 1.1 2004-08-20 13:53:42 oops Exp $
+dnl $Id: config.m4,v 1.2 2008-07-15 11:33:20 oops Exp $
 
 dnl By default, many hosts won't let programs access large files;
 dnl one must use special compiler options to get large-file access to work.
@@ -244,8 +244,8 @@ AC_DEFUN([AC_LIBRARY_CHECKED], [
   
   if test -z "$FILEBIN_LIB_DIR"; then
     for i in $SEARCH_PATH; do
-      if test -f $i/lib/$LIBNAME.$SHLIB_SUFFIX_NAME -o -f $i/lib/$LIBNAME.a ; then
-        FILEBIN_LIB_DIR=$i/lib
+      if test -f $i/$PHP_LIBDIR/$LIBNAME.$SHLIB_SUFFIX_NAME -o -f $i/$PHP_LIBDIR/$LIBNAME.a ; then
+        FILEBIN_LIB_DIR=$i/$PHP_LIBDIR
         break
       fi
     done
@@ -269,8 +269,8 @@ AC_DEFUN([AC_STATIC_LIBRARY_CHECKED], [
   
   if test -z "$FILEBIN_LIB_DIR"; then
     for i in $SEARCH_PATH; do
-      if test -f $i/lib/$LIBNAME.a ; then
-        FILEBIN_LIB_DIR=$i/lib
+      if test -f $i/$PHP_LIBDIR/$LIBNAME.a ; then
+        FILEBIN_LIB_DIR=$i/$PHP_LIBDIR
         break
       fi
     done
@@ -366,8 +366,8 @@ dnl   done
 dnl 
 dnl   if test -z "$FILEBIN_LIB_DIR"; then
 dnl     for i in $SEARCH_PATH; do
-dnl       if test -f $i/lib/libmagic.$SHLIB_SUFFIX_NAME -o -f $i/lib/libmagic.a ; then
-dnl         FILEBIN_LIB_DIR=$i/lib
+dnl       if test -f $i/$PHP_LIBDIR/libmagic.$SHLIB_SUFFIX_NAME -o -f $i/$PHP_LIBDIR/libmagic.a ; then
+dnl         FILEBIN_LIB_DIR=$i/$PHP_LIBDIR
 dnl         break
 dnl       fi
 dnl     done
