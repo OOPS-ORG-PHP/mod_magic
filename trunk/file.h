@@ -32,7 +32,7 @@
  */
 /*
  * file.h - definitions for file(1) program
- * @(#)$Id: file.h,v 1.1 2004-08-20 13:53:42 oops Exp $
+ * @(#)$Id$
  */
 
 #ifndef __file_h__

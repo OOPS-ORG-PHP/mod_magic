@@ -35,7 +35,7 @@
  *
  * See README, INSTALL, and USAGE files for more details.
  *
- * $Id: filebin.c,v 1.1 2004-08-20 13:53:42 oops Exp $
+ * $Id$
  *
  */
 

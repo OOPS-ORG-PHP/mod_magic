@@ -70,7 +70,7 @@
 #include <netinet/in.h>		/* for byte swapping */
 
 #ifndef	lint
-FILE_RCSID("@(#)$Id: file.c,v 1.1 2004-08-20 13:53:42 oops Exp $")
+FILE_RCSID("@(#)$Id$")
 #endif	/* lint */
 
 /* for PHP */
