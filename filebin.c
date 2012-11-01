@@ -66,7 +66,7 @@ static int le_filebin;
  *
  * Every user visible function must have an entry in filebin_functions[].
  */
-function_entry filebin_functions[] = {
+const zend_function_entry filebin_functions[] = {
 	PHP_FE(filebin, NULL)
 	{NULL, NULL, NULL}
 };

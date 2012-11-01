@@ -3,8 +3,13 @@ $Id$
 PHP filebin Extensoin Changelog
 
 * 1.0.1
+--------------------------------------------------------------------------------
+* Fri Nov  2 2012 JoungKyun.Kim <http://oops.org>
+- support PHP 5.4
+
 * Tue Jul 15 2008 JoungKyun.Kim <http://oops.org>
 - support 64bit library check
+
 
 * 1.0.0
 --------------------------------------------------------------------------------
