@@ -1,35 +1,51 @@
-<?
+<?php
 
-dl("./modules/filebin.so");
+if ( ! extension_loaded ('filebin') ) {
+	if ( version_compare (PHP_VERSION, '5.4.0', '<') ) {
+		fprintf (STDERR, "filebin extension is not loaded\n");
+		exit (1);
+	} else if ( version_compare (PHP_VERSION, '5.3.0', '<') )
+		dl ('filebin.so');
+	else
+		dl ('./modules/filebin.so');
+}
 
 if ( $argc < 2 ) {
   echo "Usage: $argv[0] filepath\n";
   exit;
 }
 
-echo "Case 1: given -m /usr/share/file/magic option value\n\n";
+echo <<<EOF
+Case 1: given -m /usr/share/file/magic option value
 
 
-echo "        \$ary = array ('-m', '/usr/share/file/magic');\n" .
-     "        \$c = filebin (\$argv[1], \$ary, count(\$ary));\n\n";
+        \$ary = array ('-m', '/usr/share/file/magic');
+        \$c = filebin (\$argv[1], \$ary, count(\$ary));
 
-echo "Result:\n";
+Result:
+
+EOF;
 
 $ary = array ('-m', '/usr/share/file/magic');
 $c = filebin ($argv[1], $ary, count($ary));
 echo $c;
 
+$c = filebin ($argv[1]);
 
-echo "\n\n";
-echo "Case 2: given no option\n\n";
+echo <<<EOF
 
-echo "        \$c = filebin (\$argv[1])\n\n";
 
-echo "Result:\n";
-$c = filebin ($argvs[1]);
+Case 2: given no option
+
+        \$c = filebin (\$argv[1])
+
+Result:
+
+EOF;
+
+$c = filebin ($argv[1]);
 echo $c;
 
 echo "\n";
 
-exit;
 ?>

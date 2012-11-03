@@ -62,12 +62,18 @@
 /* True global resources - no need for thread safety here */
 static int le_filebin;
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_filebin, 0, 0, 1)
+	ZEND_ARG_INFO(0, path)
+	ZEND_ARG_INFO(1, args)
+	ZEND_ARG_INFO(0, argc)
+ZEND_END_ARG_INFO()
+
 /* {{{ filebin_functions[]
  *
  * Every user visible function must have an entry in filebin_functions[].
  */
 const zend_function_entry filebin_functions[] = {
-	PHP_FE(filebin, NULL)
+	PHP_FE(filebin, arginfo_filebin)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -107,62 +113,43 @@ PHP_MINFO_FUNCTION(filebin)
 }
 /* }}} */
 
-/* {{{ proto int filebin(string file, array args_arr, int argc)
+/* {{{ proto int filebin(string path, array args_arr, int argc)
  */ 
 PHP_FUNCTION(filebin) {
-	zval		** file;
-	zval		** args;
-	zval		** z_argc;
-	char		** argv;
-	char		 * fname;
-	int			   argc, i, chkargs;
-	HashTable	 * args_arr;
+	zval         * args = NULL;
+	char         * path = NULL;
+	char        ** argv = NULL;
+	int            path_len = 0,
+				   argc = 0,
+				   i,
+				   chkargs = ZEND_NUM_ARGS ();
+	HashTable    * args_arr = NULL;
 	HashPosition   pos;
 
 	struct stat    filestat;
 
-	chkargs = ZEND_NUM_ARGS();
+	if (
+		zend_parse_parameters  (
+			chkargs TSRMLS_CC,
+			"s|al", &path, &path_len, &args, &argc) == FAILURE
+	   )
+		return;
 
-	switch ( chkargs ) {
-		case 3:
-			if ( zend_get_parameters_ex (chkargs, &file, &args, &z_argc) == FAILURE ) {
-				WRONG_PARAM_COUNT;
-			}
+	argc += 2;
 
-			if ( Z_TYPE_PP (args) != IS_ARRAY ) {
-				php_error(E_WARNING, "2nd Variable passed to filebin is not an array!\n");
-				RETURN_FALSE;
-			}
-
-			convert_to_long_ex (z_argc);
-			argc = Z_LVAL_PP (z_argc) + 2;
-			break;
-		case 1:
-			if ( zend_get_parameters_ex (chkargs, &file) == FAILURE ) {
-				WRONG_PARAM_COUNT;
-			}
-			argc = 2;
-			break;
-		default:
-			WRONG_PARAM_COUNT;
-	}
-
-	convert_to_string_ex (file);
-	fname = Z_STRVAL_PP (file);
-
-	if ( fname == NULL || strlen (fname) == 0 ) {
-		php_error (E_WARNING, "Must need filename for checking\n");
+	if ( chkargs == 2 ) {
+		php_error (E_WARNING, "Must need the number of array on 3th argument");
 		RETURN_FALSE;
 	}
 
-	if ( stat (fname, &filestat) != 0 ) {
-		php_error (E_WARNING, "%s is not found\n", fname);
+	if ( path_len == 0 ) {
+		php_error (E_WARNING, "Must need filename for checking.");
 		RETURN_FALSE;
 	}
 
-	if ( chkargs > 2 ) {
-		convert_to_array_ex(args);
-		args_arr = Z_ARRVAL_PP (args);
+	if ( stat (path, &filestat) != 0 ) {
+		php_error (E_WARNING, "%s is not found.", path);
+		RETURN_FALSE;
 	}
 
 	argv = ( char ** ) emalloc(argc * sizeof(char *));
@@ -170,9 +157,8 @@ PHP_FUNCTION(filebin) {
 	argv[0] = "filebin";
 
 	/* added option */
-	if ( chkargs > 2 ) {
-		convert_to_array_ex (args);
-		args_arr = Z_ARRVAL_PP (args);
+	if ( chkargs > 1 ) {
+		args_arr = Z_ARRVAL_P (args);
 		zend_hash_internal_pointer_reset_ex (args_arr, &pos);
 
 		for (i = 1; i < argc - 1; i++) {
@@ -193,19 +179,18 @@ PHP_FUNCTION(filebin) {
 		i = 1;
 	}
 
-	argv[i] = estrdup ( fname );
+	argv[i] = estrdup (path);
 
 	optind = 0;
 	opterr = 0;
 
-	php_start_ob_buffer (NULL, 0, 1 TSRMLS_CC);
+	OB_START_BUFFER;
 	if ( file_main(argc, argv) != 0 ) {
-		php_printf ("@@@\n");
 		RETVAL_FALSE;
 	} else {
-		php_ob_get_buffer (return_value TSRMLS_CC);
+		OB_GET_BUFFER (return_value TSRMLS_CC);
 	}
-	php_end_ob_buffer (0, 0 TSRMLS_CC);
+	OB_END_BUFFER;
 
 	for (i = 1; i < argc; i++)
 		efree(argv[i]);
