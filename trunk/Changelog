@@ -6,6 +6,7 @@ PHP filebin Extensoin Changelog
 --------------------------------------------------------------------------------
 * Fri Nov  2 2012 JoungKyun.Kim <http://oops.org>
 - support PHP 5.4
+- fixed deprecated zend_get_parameters_ex
 
 * Tue Jul 15 2008 JoungKyun.Kim <http://oops.org>
 - support 64bit library check

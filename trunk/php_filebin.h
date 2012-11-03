@@ -71,11 +71,22 @@ PHP_FUNCTION(filebin);
 #endif
 
 #define FILEBIN_BUILDNO "200408192144"
-#define FILEBIN_BUILDVER "1.0.0"
+#define FILEBIN_BUILDVER "1.0.1"
 
 #define phpext_filebin_ptr filebin_module_ptr
 
 int file_main(int argc, char *argv[]);
+
+
+#if ZEND_MODULE_API_NO >= 20050922
+#	define OB_START_BUFFER php_output_start_default(TSRMLS_C)
+#	define OB_GET_BUFFER php_output_get_contents
+#	define OB_END_BUFFER php_output_discard(TSRMLS_C)
+#else
+#	define OB_START_BUFFER php_start_ob_buffer(NULL, 0, 1 TSRMLS_CC);
+#	define OB_GET_BUFFER php_ob_get_buffer
+#	define OB_END_BUFFER php_end_ob_buffer(0, 0 TSRMLS_CC);
+#endif
 
 #endif  /* _MOD_FILEBIN_H */
 
