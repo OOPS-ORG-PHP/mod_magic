@@ -70,8 +70,7 @@ PHP_FUNCTION(filebin);
 
 #endif
 
-#define FILEBIN_BUILDNO "200408192144"
-#define FILEBIN_BUILDVER "1.0.1"
+#define FILEBIN_BUILDVER "2.0.0"
 
 #define phpext_filebin_ptr filebin_module_ptr
 

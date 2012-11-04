@@ -2,8 +2,11 @@ $Id$
 
 PHP filebin Extensoin Changelog
 
-* 1.0.1
+* 2.0.0
 --------------------------------------------------------------------------------
+* Sun Nov  4 2012 JoungKyun.Kim <http://oops.org>
+- changed format of function arguments
+
 * Fri Nov  2 2012 JoungKyun.Kim <http://oops.org>
 - support PHP 5.4
 - fixed deprecated zend_get_parameters_ex

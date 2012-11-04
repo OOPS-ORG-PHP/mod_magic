@@ -10,42 +10,77 @@ if ( ! extension_loaded ('filebin') ) {
 		dl ('./modules/filebin.so');
 }
 
-if ( $argc < 2 ) {
-  echo "Usage: $argv[0] filepath\n";
-  exit;
-}
+/*
+ * flags
+ * 
+ * MAGIC_NONE
+ * MAGIC_DEBUG
+ * MAGIC_SYMLINK
+ * MAGIC_COMPRESS
+ * MAGIC_DEVICES
+ * MAGIC_MIME_TYPE
+ * MAGIC_CONTINUE
+ * MAGIC_CHECK
+ * MAGIC_PRESERVE_ATIME
+ * MAGIC_RAW
+ * MAGIC_ERROR
+ * MAGIC_MIME_ENCODING
+ * MAGIC_MIME
+ * MAGIC_APPLE
+ * MAGIC_NO_CHECK_COMPRESS
+ * MAGIC_NO_CHECK_TAR
+ * MAGIC_NO_CHECK_SOFT
+ * MAGIC_NO_CHECK_APPTYPE
+ * MAGIC_NO_CHECK_ELF
+ * MAGIC_NO_CHECK_TEXT
+ * MAGIC_NO_CHECK_CDF
+ * MAGIC_NO_CHECK_TOKENS
+ * MAGIC_NO_CHECK_ENCODING
+ */
 
 echo <<<EOF
-Case 1: given -m /usr/share/file/magic option value
-
-
-        \$ary = array ('-m', '/usr/share/file/magic');
-        \$c = filebin (\$argv[1], \$ary, count(\$ary));
-
-Result:
-
+  *
+  * USAGE:
+  *        filebin (path, file_flags = MAGIC_NONE, magic_file = NULL);
+  *        filebin (path, magic_file = NULL);
+  *
+  *
+  * execute with filebin ('modules/filebin.so');
+  *
+  
 EOF;
 
-$ary = array ('-m', '/usr/share/file/magic');
-$c = filebin ($argv[1], $ary, count($ary));
-echo $c;
-
-$c = filebin ($argv[1]);
+echo filebin ('modules/filebin.so') . "\n";
 
 echo <<<EOF
 
-
-Case 2: given no option
-
-        \$c = filebin (\$argv[1])
-
-Result:
-
+  *
+  * execute with filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc');
+  *
+  
 EOF;
 
-$c = filebin ($argv[1]);
-echo $c;
+echo filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc') . "\n";
 
-echo "\n";
+
+echo <<<EOF
+
+  *
+  * execute with filebin ('modules/filebin.so', MAGIC_MIME_ENCODING);
+  *
+  
+EOF;
+
+echo filebin ('modules/filebin.so', MAGIC_MIME_ENCODING) . "\n";
+
+echo <<<EOF
+
+  *
+  * execute with filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc');
+  *
+  
+EOF;
+
+echo filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') . "\n";
 
 ?>
