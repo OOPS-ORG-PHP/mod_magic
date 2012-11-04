@@ -64,8 +64,8 @@ static int le_filebin;
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_filebin, 0, 0, 1)
 	ZEND_ARG_INFO(0, path)
-	ZEND_ARG_INFO(1, args)
-	ZEND_ARG_INFO(0, argc)
+	ZEND_ARG_INFO(0, flag)
+	ZEND_ARG_INFO(0, magic)
 ZEND_END_ARG_INFO()
 
 /* {{{ filebin_functions[]
@@ -131,7 +131,7 @@ PHP_FUNCTION(filebin) {
 	if (
 		zend_parse_parameters  (
 			chkargs TSRMLS_CC,
-			"s|al", &path, &path_len, &args, &argc) == FAILURE
+			"s|ls", &path, &path_len, &args, &argc) == FAILURE
 	   )
 		return;
 
