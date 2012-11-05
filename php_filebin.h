@@ -5,7 +5,7 @@
  *
  * JoungKyun Kim, <http://www.oops.org> 8/19/2004
  * 
- * Copyright (c) 2004, JoungKyun Kim
+ * Copyright (c) 2012, JoungKyun Kim
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
