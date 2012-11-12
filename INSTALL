@@ -1,96 +1,96 @@
-$Id$
+$Id: INSTALL,v 1.1 2004-08-20 13:53:42 oops Exp $
 
-* mod_filebin ë¥¼ ë¹Œë“œí•˜ê¸° ìœ„í•œ ì¡°ê±´
+* mod_filebin ¸¦ ºôµåÇÏ±â À§ÇÑ Á¶°Ç
 
-1. file íŒ¨í‚¤ì§€ ë˜ëŠ” file-devel íŒ¨í‚¤ì§€ê°€ ì„¤ì¹˜ ë˜ì–´ ìžˆì–´ì•¼ í•©ë‹ˆë‹¤.
-2. php5 ì´ìƒì´ ì„¤ì¹˜ ë˜ì–´ ìžˆì–´ì•¼ í•©ë‹ˆë‹¤.
+1. file ÆÐÅ°Áö°¡ ¼³Ä¡ µÇ¾î ÀÖ¾î¾ß ÇÕ´Ï´Ù. 4.07¹öÀü¿¡¼­ Å×½ºÆ®°¡ µÇ¾îÁ³½À´Ï´Ù.
+2. php4 ¶Ç´Â php5 °¡ ¼³Ä¡ µÇ¾î ÀÖ¾î¾ß ÇÕ´Ï´Ù.
 
 
-* mod_filebin ì„¤ì¹˜
+* mod_filebin ¼³Ä¡
 
-php extension ì€ 3ê°€ì§€ì˜ ë°©ë²•ìœ¼ë¡œ ë¹Œë“œë¥¼ í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤. ë˜í•œ ë¹Œë“œë¥¼ ìœ„í•´ì„œëŠ”
-file íŒ¨í‚¤ì§€ê°€ ì„¤ì¹˜ ë˜ì–´ ìžˆì–´ì•¼ í•©ë‹ˆë‹¤.
+php extension Àº 3°¡ÁöÀÇ ¹æ¹ýÀ¸·Î ºôµå¸¦ ÇÒ ¼ö ÀÖ½À´Ï´Ù. ¶ÇÇÑ ºôµå¸¦ À§ÇØ¼­´Â
+file ÆÐÅ°Áö°¡ ¼³Ä¡ µÇ¾î ÀÖ¾î¾ß ÇÕ´Ï´Ù.
 
-1. phpize ë¥¼ ì´ìš©í•˜ì—¬ ë…ë¦½ì ìœ¼ë¡œ  shared extension ìœ¼ë¡œ ë¹Œë“œ
+1. phpize ¸¦ ÀÌ¿ëÇÏ¿© µ¶¸³ÀûÀ¸·Î  shared extension À¸·Î ºôµå
 
-   1) ìž„ì˜ì˜ ë””ë ‰í† ë¦¬ì— mod_filebin ì˜ ì†ŒìŠ¤ë¥¼ í’€ì–´ ë†“ìŠµë‹ˆë‹¤.
+   1) ÀÓÀÇÀÇ µð·ºÅä¸®¿¡ mod_filebin ÀÇ ¼Ò½º¸¦ Ç®¾î ³õ½À´Ï´Ù.
 
       # cd /tmp
       # tar xvfpj mod_filebin-1.0.0.tar.bz2
 
-   2) phpize ë¥¼ ì‹¤í–‰í•˜ì—¬ ë¹Œë“œë¥¼ í•˜ê¸° ìœ„í•œ ì¤€ë¹„ë¥¼ í•©ë‹ˆë‹¤.
+   2) phpize ¸¦ ½ÇÇàÇÏ¿© ºôµå¸¦ ÇÏ±â À§ÇÑ ÁØºñ¸¦ ÇÕ´Ï´Ù.
 
       # cd mod_filebin-1.0.0
       # phpize
 
-   3) ./configure ë¥¼ ì‹¤í–‰í•©ë‹ˆë‹¤.
+   3) ./configure ¸¦ ½ÇÇàÇÕ´Ï´Ù.
 
-      ì—¬ê¸°ì„œ ì£¼ì˜í•  ê²ƒì€ file íŒ¨í‚¤ì§€ë¥¼ ìž„ì˜ì˜ ê²½ë¡œì— ì„¤ì¹˜ í–ˆë‹¤ë©´, libmagic.so
-      ì™€ magic.h ì˜ ê²½ë¡œë¥¼ ì§€ì •í•´ ì£¼ì‹œëŠ” ê²ƒì´ ì¢‹ìŠµë‹ˆë‹¤. libmagic.so ì˜ ê²½ë¡œê°€
-      /usr/local/lib/libmagic.so,  magic.h ê°€ /usr/local/include/file/magic.h
-      ë¼ë©´ ì•„ëž˜ê°™ì´ ì‹¤í–‰ì„ í•˜ë„ë¡ í•©ë‹ˆë‹¤.
+      ¿©±â¼­ ÁÖÀÇÇÒ °ÍÀº file ÆÐÅ°Áö¸¦ ÀÓÀÇÀÇ °æ·Î¿¡ ¼³Ä¡ Çß´Ù¸é, libmagic.so
+      ¿Í magic.h ÀÇ °æ·Î¸¦ ÁöÁ¤ÇØ ÁÖ½Ã´Â °ÍÀÌ ÁÁ½À´Ï´Ù. libmagic.so ÀÇ °æ·Î°¡
+      /usr/local/lib/libmagic.so,  magic.h °¡ /usr/local/include/file/magic.h
+      ¶ó¸é ¾Æ·¡°°ÀÌ ½ÇÇàÀ» ÇÏµµ·Ï ÇÕ´Ï´Ù.
 
-      ì„¤ì¹˜ í•˜ëŠ” ì„œë²„ê°€ ë¦¬ëˆ…ìŠ¤ë¼ë©´, /usr/lib ì™€ /usr/include ì— ê°ê° ë“¤ì–´ ìžˆì„
-      ê²½ìš°ì—ëŠ” ìƒëžµí•˜ì‹¤ ìˆ˜ ìžˆìŠµë‹ˆë‹¤.
+      ¼³Ä¡ ÇÏ´Â ¼­¹ö°¡ ¸®´ª½º¶ó¸é, /usr/lib ¿Í /usr/include ¿¡ °¢°¢ µé¾î ÀÖÀ»
+      °æ¿ì¿¡´Â »ý·«ÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.
 
-      LDFLAGS ëŠ” ë¼ì´ë¸ŒëŸ¬ë¦¬ (libmagic.so ë˜ëŠ” libmagic.a ) ê°€ ì¡´ìž¬í•˜ëŠ” ê²½ë¡œë¥¼
-      ì§€ì •í•´ ì£¼ë©°, CPPLFAGS ëŠ” í—¤ë” íŒŒì¼ (magic.h) ê°€ ìžˆëŠ” ê²½ë¡œë¥¼ ì§€ì • í•©ë‹ˆë‹¤.
+      LDFLAGS ´Â ¶óÀÌºê·¯¸® (libmagic.so ¶Ç´Â libmagic.a ) °¡ Á¸ÀçÇÏ´Â °æ·Î¸¦
+      ÁöÁ¤ÇØ ÁÖ¸ç, CPPLFAGS ´Â Çì´õ ÆÄÀÏ (magic.h) °¡ ÀÖ´Â °æ·Î¸¦ ÁöÁ¤ ÇÕ´Ï´Ù.
 
-      libmagic.a ë˜ëŠ” libmagic.so ëŠ” ì•„ëž˜ì˜ ê²½ë¡œì— ìžˆì„ ê²½ìš°, ì„¤ì¹˜ ìŠ¤í¬ë¦½íŠ¸ê°€
-      ìžë™ìœ¼ë¡œ ì°¾ê¸° ë•Œë¬¸ì—, ìœ„ì˜ LDFALGS ì— ëŒ€í•œ ì–¸ê¸‰ì„ ë¬´ì‹œí•˜ì…”ë„ ë©ë‹ˆë‹¤.
+      libmagic.a ¶Ç´Â libmagic.so ´Â ¾Æ·¡ÀÇ °æ·Î¿¡ ÀÖÀ» °æ¿ì, ¼³Ä¡ ½ºÅ©¸³Æ®°¡
+      ÀÚµ¿À¸·Î Ã£±â ¶§¹®¿¡, À§ÀÇ LDFALGS ¿¡ ´ëÇÑ ¾ð±ÞÀ» ¹«½ÃÇÏ¼Åµµ µË´Ï´Ù.
 
       /usr/lib
       /usr/local/lib
       /usr/local/file/lib 
 
-      magic.h ëŠ” ì•„ëž˜ì˜ ê²½ë¡œì— ìžˆì„ ê²½ìš°ì—” ì„¤ì¹˜ ìŠ¤í¬ë¦½íŠ¸ê°€ ìžë™ìœ¼ë¡œ ì°¾ê¸° ë•Œë¬¸
-      ì—, ìœ„ì˜ CPPFLAGS ì— ëŒ€í•œ ì–¸ê¸‰ì„ ë¬´ì‹œí•˜ì…”ë„ ë©ë‹ˆë‹¤.
+      magic.h ´Â ¾Æ·¡ÀÇ °æ·Î¿¡ ÀÖÀ» °æ¿ì¿£ ¼³Ä¡ ½ºÅ©¸³Æ®°¡ ÀÚµ¿À¸·Î Ã£±â ¶§¹®
+      ¿¡, À§ÀÇ CPPFLAGS ¿¡ ´ëÇÑ ¾ð±ÞÀ» ¹«½ÃÇÏ¼Åµµ µË´Ï´Ù.
 
       # LDFLAGS=-L/usr/local/lib CPPFLAGS=/usr/local/include/file ./configure
 
-   4) make ì™€ make install ì„ ì´ìš©í•˜ì—¬ ì»´íŒŒì¼ í›„, ì„¤ì¹˜ í•©ë‹ˆë‹¤.
+   4) make ¿Í make install À» ÀÌ¿ëÇÏ¿© ÄÄÆÄÀÏ ÈÄ, ¼³Ä¡ ÇÕ´Ï´Ù.
 
       # make
       # make install
 
-   5) php.ini ì—ì„œ extension=filebin.so ë¥¼ ë“±ë¡í•œ í›„, web server ë¥¼ ìž¬ì‹œìž‘ í•©
-      ë‹ˆë‹¤.
+   5) php.ini ¿¡¼­ extension=filebin.so ¸¦ µî·ÏÇÑ ÈÄ, web server ¸¦ Àç½ÃÀÛ ÇÕ
+      ´Ï´Ù.
 
 
-2. --with-filebin=shared ë¥¼ ì´ìš©í•œ shared extension ìœ¼ë¡œ ë¹Œë“œ
+2. --with-filebin=shared ¸¦ ÀÌ¿ëÇÑ shared extension À¸·Î ºôµå
 
-   1) php source ë¥¼ ì„¤ì¹˜ í•©ë‹ˆë‹¤.
+   1) php source ¸¦ ¼³Ä¡ ÇÕ´Ï´Ù.
 
       # tar xvjpz php-4.3.8.tar.bz2
 
-   2) ext directory ì— mod_filebin ì˜ ì†ŒìŠ¤ë¥¼ í’€ì–´ ë†“ìŠµë‹ˆë‹¤.
+   2) ext directory ¿¡ mod_filebin ÀÇ ¼Ò½º¸¦ Ç®¾î ³õ½À´Ï´Ù.
 
       # cd php-4.3.8/ext
       # tar xvfpj mod_filebin-1.0.0.tar.bz2
       # mv mod_filebin-1.0.0 filebin
 
-   3) configure ì— --with-filebin=shared ì˜µì…˜ì„ ì£¼ê³  ì‹¤í–‰ í•©ë‹ˆë‹¤. fileì˜ ë¼ì´
-      ë¸ŒëŸ¬ë¦¬ì™€ í—¤ë”íŒŒì¼ì— ëŒ€í•œ ì–¸ê¸‰ì€
+   3) configure ¿¡ --with-filebin=shared ¿É¼ÇÀ» ÁÖ°í ½ÇÇà ÇÕ´Ï´Ù. fileÀÇ ¶óÀÌ
+      ºê·¯¸®¿Í Çì´õÆÄÀÏ¿¡ ´ëÇÑ ¾ð±ÞÀº
 
-      "1. phpize ë¥¼ ì´ìš©í•˜ì—¬ ë…ë¦½ì ìœ¼ë¡œ shared extension ìœ¼ë¡œ ë¹Œë“œ"
+      "1. phpize ¸¦ ÀÌ¿ëÇÏ¿© µ¶¸³ÀûÀ¸·Î shared extension À¸·Î ºôµå"
 
-      ì˜ 3ë²ˆ í•­ëª©ì„ ì°¸ê³  í•˜ì‹­ì‹œì˜¤.
+      ÀÇ 3¹ø Ç×¸ñÀ» Âü°í ÇÏ½Ê½Ã¿À.
 
       # ./configure --with-filebin=shared
 
-   4) ë‚˜ë¨¸ì§€ ê³¼ì •ì€
+   4) ³ª¸ÓÁö °úÁ¤Àº
 
-      "1. phpize ë¥¼ ì´ìš©í•˜ì—¬ ë…ë¦½ì ìœ¼ë¡œ shared extension ìœ¼ë¡œ ë¹Œë“œ"
+      "1. phpize ¸¦ ÀÌ¿ëÇÏ¿© µ¶¸³ÀûÀ¸·Î shared extension À¸·Î ºôµå"
 
-      ì˜ 4ë²ˆ 5ë²ˆ í•­ëª©ì„ ì°¸ê³  í•˜ì‹­ì‹œì˜¤.
-
-
-3. --with-filebin ì˜µì…˜ì„ ì´ìš©í•œ ì •ì ì¸ ë¹Œë“œ
-
-   ì •ì ìœ¼ë¡œ ë¹Œë“œí•˜ëŠ” ë°©ë²•ì€ 2ë²ˆ í•­ëª©ê³¼ ë™ì¼í•˜ë©°, 2ë²ˆ í•­ëª©ì˜ 3)ë²ˆ í•­ëª©ì˜
-   ./configure ì‹œì— --with-filebintooê³¼ ê°™ì´ shared ì˜µì…˜ë§Œ ë¹¼ê³  ë¹Œë“œ í•˜ì‹œë©´
-   ë©ë‹ˆë‹¤.
+      ÀÇ 4¹ø 5¹ø Ç×¸ñÀ» Âü°í ÇÏ½Ê½Ã¿À.
 
 
+3. --with-filebin ¿É¼ÇÀ» ÀÌ¿ëÇÑ Á¤ÀûÀÎ ºôµå
 
-- ê¹€ì •ê·  <http://oops.org> 2004.08.21
+   Á¤ÀûÀ¸·Î ºôµåÇÏ´Â ¹æ¹ýÀº 2¹ø Ç×¸ñ°ú µ¿ÀÏÇÏ¸ç, 2¹ø Ç×¸ñÀÇ 3)¹ø Ç×¸ñÀÇ
+   ./configure ½Ã¿¡ --with-filebintoo°ú °°ÀÌ shared ¿É¼Ç¸¸ »©°í ºôµå ÇÏ½Ã¸é
+   µË´Ï´Ù.
+
+
+
+- ±èÁ¤±Õ <http://www.oops.org> 2004.08.21

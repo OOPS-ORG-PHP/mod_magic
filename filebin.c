@@ -3,7 +3,7 @@
  *
  * JoungKyun Kim, <http://devel.oops.org>
  *
- * Copyright (c) 2012, JoungKyun.Kim
+ * Copyright (c) 2004, JoungKyun Kim
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
  *
  * See README, INSTALL, and USAGE files for more details.
  *
- * $Id$
+ * $Id: filebin.c,v 1.1 2004-08-20 13:53:42 oops Exp $
  *
  */
 
@@ -48,15 +48,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <locale.h>
 #include "php.h"
 #include "php_ini.h"
 #include "SAPI.h"
 #include "ext/standard/info.h"
 #include "ext/standard/php_string.h"
 
-#include <fcntl.h>
-#include <magic.h>
 #include "php_filebin.h"
 /* }}} */
 
@@ -65,18 +62,12 @@
 /* True global resources - no need for thread safety here */
 static int le_filebin;
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_filebin, 0, 0, 1)
-	ZEND_ARG_INFO(0, path)
-	ZEND_ARG_INFO(0, flag)
-	ZEND_ARG_INFO(0, magic)
-ZEND_END_ARG_INFO()
-
 /* {{{ filebin_functions[]
  *
  * Every user visible function must have an entry in filebin_functions[].
  */
-const zend_function_entry filebin_functions[] = {
-	PHP_FE(filebin, arginfo_filebin)
+function_entry filebin_functions[] = {
+	PHP_FE(filebin, NULL)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -89,7 +80,7 @@ zend_module_entry filebin_module_entry = {
 #endif
 	"filebin",
 	filebin_functions,
-	PHP_MINIT(filebin),
+	NULL,
 	NULL,
 	NULL,
 	NULL,
@@ -116,129 +107,112 @@ PHP_MINFO_FUNCTION(filebin)
 }
 /* }}} */
 
-/* {{{ PHP_MINIT_FUNCTION
- */
-PHP_MINIT_FUNCTION(filebin)
-{
-	// magic flags
-	REGISTER_LONG_CONSTANT ("MAGIC_NONE", MAGIC_NONE, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_DEBUG", MAGIC_DEBUG, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_SYMLINK", MAGIC_SYMLINK, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_COMPRESS", MAGIC_COMPRESS, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_DEVICES", MAGIC_DEVICES, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_MIME_TYPE", MAGIC_MIME_TYPE, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_CONTINUE", MAGIC_CONTINUE, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_CHECK", MAGIC_CHECK, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_PRESERVE_ATIME", MAGIC_PRESERVE_ATIME, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_RAW", MAGIC_RAW, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_ERROR", MAGIC_ERROR, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_MIME_ENCODING", MAGIC_MIME_ENCODING, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_MIME", MAGIC_MIME, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_APPLE", MAGIC_APPLE, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_COMPRESS", MAGIC_NO_CHECK_COMPRESS, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TAR", MAGIC_NO_CHECK_TAR, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_SOFT", MAGIC_NO_CHECK_SOFT, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_APPTYPE", MAGIC_NO_CHECK_APPTYPE, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ELF", MAGIC_NO_CHECK_ELF, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TEXT", MAGIC_NO_CHECK_TEXT, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_CDF", MAGIC_NO_CHECK_CDF, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TOKENS", MAGIC_NO_CHECK_TOKENS, CONST_PERSISTENT | CONST_CS);
-	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ENCODING", MAGIC_NO_CHECK_ENCODING, CONST_PERSISTENT | CONST_CS);
-}
-/* }}} */
-
-/* {{{ proto int filebin(string path, array args_arr, int argc)
+/* {{{ proto int filebin(string file, array args_arr, int argc)
  */ 
 PHP_FUNCTION(filebin) {
-	zval         * zflag;
-	char         * path = NULL;
-	char         * magicpath = NULL;
-	const char   * type;
-	int            path_len = 0,
-				   magic_len = 0,
-				   flags = 0,
-				   flag = 0,
-				   action = 0, // FILE_LOAD
-				   chkargs = ZEND_NUM_ARGS ();
-
-	struct stat    filestat;
-	struct magic_set * magic = NULL;
-
-
-	HashTable    * args_arr = NULL;
+	zval		** file;
+	zval		** args;
+	zval		** z_argc;
+	char		** argv;
+	char		 * fname;
+	int			   argc, i, chkargs;
+	HashTable	 * args_arr;
 	HashPosition   pos;
 
-	/* makes islower etc work for other langs */
-	(void) setlocale (LC_CTYPE, "");
+	struct stat    filestat;
 
-#ifdef S_IFLNK
-	flags |= getenv("POSIXLY_CORRECT") ? MAGIC_SYMLINK : 0;
-#endif
+	chkargs = ZEND_NUM_ARGS();
 
-	if (
-		zend_parse_parameters  (
-			chkargs TSRMLS_CC,
-			"s|zs", &path, &path_len, &zflag, &magicpath, &magic_len) == FAILURE
-	   )
-		return;
+	switch ( chkargs ) {
+		case 3:
+			if ( zend_get_parameters_ex (chkargs, &file, &args, &z_argc) == FAILURE ) {
+				WRONG_PARAM_COUNT;
+			}
 
-	if ( path_len == 0 ) {
-		php_error (E_WARNING, "Must need filename for checking.");
-		RETURN_NULL ();
+			if ( Z_TYPE_PP (args) != IS_ARRAY ) {
+				php_error(E_WARNING, "2nd Variable passed to filebin is not an array!\n");
+				RETURN_FALSE;
+			}
+
+			convert_to_long_ex (z_argc);
+			argc = Z_LVAL_PP (z_argc) + 2;
+			break;
+		case 1:
+			if ( zend_get_parameters_ex (chkargs, &file) == FAILURE ) {
+				WRONG_PARAM_COUNT;
+			}
+			argc = 2;
+			break;
+		default:
+			WRONG_PARAM_COUNT;
 	}
 
-	if ( stat (path, &filestat) != 0 ) {
-		php_error (E_WARNING, "%s is not found.", path);
-		RETURN_NULL ();
+	convert_to_string_ex (file);
+	fname = Z_STRVAL_PP (file);
+
+	if ( fname == NULL || strlen (fname) == 0 ) {
+		php_error (E_WARNING, "Must need filename for checking\n");
+		RETURN_FALSE;
 	}
 
-	if ( chkargs == 2 ) {
-		int p = Z_TYPE_P (zflag);
+	if ( stat (fname, &filestat) != 0 ) {
+		php_error (E_WARNING, "%s is not found\n", fname);
+		RETURN_FALSE;
+	}
 
-		switch (p) {
-			case IS_STRING :
-				magicpath = Z_STRVAL_P (zflag);
-				flag = 0;
-				break;
-			case IS_LONG :
-				flag = Z_LVAL_P (zflag);
-				break;
-			default :
-				php_error (E_WARNING, "filebin: Only permit flag or magic file path.");
-				RETURN_NULL ();
+	if ( chkargs > 2 ) {
+		convert_to_array_ex(args);
+		args_arr = Z_ARRVAL_PP (args);
+	}
+
+	argv = ( char ** ) emalloc(argc * sizeof(char *));
+
+	argv[0] = "filebin";
+
+	/* added option */
+	if ( chkargs > 2 ) {
+		convert_to_array_ex (args);
+		args_arr = Z_ARRVAL_PP (args);
+		zend_hash_internal_pointer_reset_ex (args_arr, &pos);
+
+		for (i = 1; i < argc - 1; i++) {
+			zval **dataptr;
+
+			if ( zend_hash_get_current_data_ex(args_arr, (void **) &dataptr, &pos) == FAILURE )
+				continue;
+
+			if ( Z_TYPE_PP (dataptr) != IS_STRING )
+				convert_to_string_ex (dataptr);
+
+			argv[i] = estrdup ( Z_STRVAL_PP (dataptr) );
+
+			if ( i < argc )
+				zend_hash_move_forward_ex (args_arr, &pos);
 		}
-	} else if ( chkargs == 3 ) {
-		if ( Z_TYPE_P (zflag) != IS_LONG ) {
-			php_error (E_WARNING, "filebin: Only permit flag on 2th argument.");
-			RETURN_NULL ();
-		}
-
-		flag = Z_LVAL_P (zflag);
+	} else {
+		i = 1;
 	}
 
-	if ( flag )
-		flags |= flag;
+	argv[i] = estrdup ( fname );
 
-	magic = magic_open (flag);
-	if ( magic == NULL ) {
-		php_error (E_WARNING, strerror (errno));
-		RETURN_NULL ();
+	optind = 0;
+	opterr = 0;
+
+	php_start_ob_buffer (NULL, 0, 1 TSRMLS_CC);
+	if ( file_main(argc, argv) != 0 ) {
+		php_printf ("@@@\n");
+		RETVAL_FALSE;
+	} else {
+		php_ob_get_buffer (return_value TSRMLS_CC);
 	}
+	php_end_ob_buffer (0, 0 TSRMLS_CC);
 
-	if ( magic_load (magic, magicpath) == -1 ) {
-		php_error (E_WARNING, magic_error (magic));
-		magic_close (magic);
-		RETURN_NULL ();
-	}
+	for (i = 1; i < argc; i++)
+		efree(argv[i]);
 
-	if ( (type = magic_file (magic, path)) == NULL ) {
-		php_error (E_WARNING, magic_error(magic));
-		magic_close (magic);
-		RETURN_NULL ();
-	}
+	efree(argv);
 
-	RETVAL_STRING (type, 1);
-	magic_close (magic);
+	return;
 }
 /* }}} */
 
