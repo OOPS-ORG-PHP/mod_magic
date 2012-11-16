@@ -41,8 +41,8 @@ if ( ! extension_loaded ('filebin') ) {
 echo <<<EOF
   *
   * USAGE:
-  *        filebin (path, file_flags = MAGIC_NONE, magic_file = NULL);
-  *        filebin (path, magic_file = NULL);
+  *        filebin (path[, file_flags = MAGIC_NONE[, magic_file = NULL]]);
+  *        filebin (path[, magic_file = NULL]);
   *
   *
   * execute with filebin ('modules/filebin.so');
