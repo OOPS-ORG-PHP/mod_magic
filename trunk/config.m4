@@ -287,6 +287,10 @@ PHP_ARG_WITH(filebin, for filebin support,
 [  --with-filebin[=DIR]      Include filebin support.  DIR is the file
                           install directory.])
 
+if test "x$PHP_EXECUTABLE" = "xNONE"; then
+	PHP_EXECUTABLE="/usr/bin/php"
+fi
+
 if test "$PHP_FILEBIN" != "no"; then
   AC_DEFINE(HAVE_FILEBIN,1,[ ])
 
