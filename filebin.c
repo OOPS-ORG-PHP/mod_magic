@@ -147,7 +147,7 @@ PHP_MINIT_FUNCTION(filebin)
 }
 /* }}} */
 
-/* {{{ proto int filebin(string path, array args_arr, int argc)
+/* {{{ proto (int|null) filebin(string path, array args_arr, int argc)
  */ 
 PHP_FUNCTION(filebin) {
 	zval         * zflag;
