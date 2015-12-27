@@ -3,7 +3,7 @@
  *
  * JoungKyun Kim, <http://devel.oops.org>
  *
- * Copyright (c) 2012, JoungKyun.Kim
+ * Copyright (c) 2015, JoungKyun.Kim
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
