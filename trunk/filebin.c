@@ -60,6 +60,13 @@
 #include "php_filebin.h"
 /* }}} */
 
+#if PHP_API_VERSION < 20151012
+#error "************ PHP version dependency problems *******************"
+#error "This package requires over php 7.0.0 !!"
+#error "If you build with php under 7.0.0, use mod_filebin 2.x version"
+#error "You can download mod_filebin 2.x at http://mirror.oops.org/pub/oops/php/extensions/mod_filebin/"
+#endif
+
 #if HAVE_FILEBIN
 
 /* True global resources - no need for thread safety here */
@@ -151,15 +158,14 @@ PHP_MINIT_FUNCTION(filebin)
  */ 
 PHP_FUNCTION(filebin) {
 	zval         * zflag;
-	char         * path = NULL;
+	zend_string  * path = NULL;
+	zend_string  * mpath = NULL;
 	char         * magicpath = NULL;
 	const char   * type;
-	int            path_len = 0,
-				   magic_len = 0,
-				   flags = 0,
-				   flag = 0,
-				   action = 0, // FILE_LOAD
-				   chkargs = ZEND_NUM_ARGS ();
+	int            flags = 0,
+	               flag = 0,
+	               action = 0, // FILE_LOAD
+	               chkargs = ZEND_NUM_ARGS ();
 
 	struct stat    filestat;
 	struct magic_set * magic = NULL;
@@ -177,18 +183,17 @@ PHP_FUNCTION(filebin) {
 
 	if (
 		zend_parse_parameters  (
-			chkargs TSRMLS_CC,
-			"s|zs", &path, &path_len, &zflag, &magicpath, &magic_len) == FAILURE
+			chkargs, "S|zS", &path, &zflag, &mpath) == FAILURE
 	   )
 		return;
 
-	if ( path_len == 0 ) {
+	if ( ZSTR_LEN (path) == 0 ) {
 		php_error (E_WARNING, "Must need filename for checking.");
 		RETURN_NULL ();
 	}
 
-	if ( stat (path, &filestat) != 0 ) {
-		php_error (E_WARNING, "%s is not found.", path);
+	if ( stat (ZSTR_VAL (path), &filestat) != 0 ) {
+		php_error (E_WARNING, "%s is not found.", ZSTR_VAL (path));
 		RETURN_NULL ();
 	}
 
@@ -214,6 +219,7 @@ PHP_FUNCTION(filebin) {
 		}
 
 		flag = Z_LVAL_P (zflag);
+		magicpath = ZSTR_LEN (mpath) ? ZSTR_VAL (mpath) : NULL;
 	}
 
 	if ( flag )
@@ -231,13 +237,13 @@ PHP_FUNCTION(filebin) {
 		RETURN_NULL ();
 	}
 
-	if ( (type = magic_file (magic, path)) == NULL ) {
+	if ( (type = magic_file (magic, ZSTR_VAL (path))) == NULL ) {
 		php_error (E_WARNING, magic_error(magic));
 		magic_close (magic);
 		RETURN_NULL ();
 	}
 
-	RETVAL_STRING (type, 1);
+	RETVAL_STRING (type);
 	magic_close (magic);
 }
 /* }}} */

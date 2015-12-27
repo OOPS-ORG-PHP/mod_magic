@@ -2,6 +2,13 @@ $Id$
 
 PHP filebin Extensoin Changelog
 
+* 3.0.0
+--------------------------------------------------------------------------------
+* Sun Dec 28 2015 JoungKyun.Kim <http://oops.org>
+- support over PHP 7
+- unsupport PHP 3/4/5
+
+
 * 2.0.0
 --------------------------------------------------------------------------------
 * Sun Nov  4 2012 JoungKyun.Kim <http://oops.org>
