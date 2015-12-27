@@ -1,4 +1,4 @@
-dnl $Id$
+dnl $Id: config.m4 14 2012-11-16 18:29:50Z oops $
 
 dnl By default, many hosts won't let programs access large files;
 dnl one must use special compiler options to get large-file access to work.

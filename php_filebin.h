@@ -35,7 +35,7 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id$
+ * $Id: php_filebin.h 19 2015-12-27 16:56:20Z oops $
  *
  */
 

@@ -35,7 +35,7 @@
  *
  * See README, INSTALL, and USAGE files for more details.
  *
- * $Id$
+ * $Id: filebin.c 19 2015-12-27 16:56:20Z oops $
  *
  */
 
