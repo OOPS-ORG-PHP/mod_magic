@@ -6,4 +6,4 @@ rm -rf autom4te.cache build include modules
 rm -f install-sh missing mkinstalldirs ltmain.sh
 rm -f .deps Makefile.global
 rm -f *~
-
+rm -f tests/*.{diff,exp,log,out,php,sh,mem}
