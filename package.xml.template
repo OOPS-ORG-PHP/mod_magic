@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.10.6" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+	<name>filebin</name>
+	<channel>pecl.php.net</channel>
+	<summary>filebin - like /bin/file</summary>
+	<description>return strings just like /bin/file
+	</description>
+	<lead>
+		<name>JoungKyun.Kim</name>
+		<user>joungkyun</user>
+		<email>joungkyun@daum.net</email>
+		<active>yes</active>
+	</lead>
+	<date>@curdate@</date>
+	<time>@curtime@</time>
+	<version>
+		<release>3.0.0</release>
+		<api>1.0.0</api>
+	</version>
+	<stability>
+		<release>stable</release>
+		<api>stable</api>
+	</stability>
+	<license uri="https://raw.githubusercontent.com/OOPS-ORG-PHP/mod_filebin/master/LICENSE">BSD 3-Clause</license>
+	<notes>
+		- support PHP 7
+		- unsupport PHP 5 and before
+	</notes>
+	<contents>
+		<dir name="/">
+			<file md5sum="@README.md@" name="README.md" role="doc" />
+			<file md5sum="@LICENSE@" name="LICENSE" role="doc" />
+			<file md5sum="@config.m4@" name="config.m4" role="src" />
+			<file md5sum="@filebin.c@" name="filebin.c" role="src" />
+			<file md5sum="@php_filebin.h@" name="php_filebin.h" role="src" />
+			<file md5sum="@test.php@" name="test.php" role="src" />
+			<dir name="tests">
+				<file md5sum="@001-enable.phpt@" name="001-enable.phpt" role="test" />
+				<file md5sum="@002-1arg.phpt@" name="002-1arg.phpt" role="test" />
+				<file md5sum="@003-user-magicfile.phpt@" name="003-user-magicfile.phpt" role="test" />
+				<file md5sum="@004-with-flag.phpt@" name="004-with-flag.phpt" role="test" />
+				<file md5sum="@005-flag-magicfile.phpt@" name="005-flag-magicfile.phpt" role="test" />
+			</dir>
+		</dir> <!-- / -->
+	</contents>
+	<dependencies>
+		<required>
+			<php>
+				<min>7.0.0</min>
+			</php>
+			<pearinstaller>
+				<min>1.4.3</min>
+			</pearinstaller>
+		</required>
+	</dependencies>
+	<providesextension>filebin</providesextension>
+	<extsrcrelease />
+	<changelog>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>3.0.0</release><api>1.0.0</api></version>
+			<date>@curdate@</date>
+			<notes>
+				- support PHP 7
+				- unsupport PHP 5 and before
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>2.0.0</release><api>1.0.0</api></version>
+			<date>2016-07-09</date>
+			<notes>
+				- support PHP 5.4
+				- support 64bit library check
+				- changed format of function arguments
+				- fixed deprecated zend_get_parameters_ex
+			</notes>
+		</release>
+		<release>
+			<stability><release>stable</release><api>stable</api></stability>
+			<version><release>1.0.0</release><api>1.0.0</api></version>
+			<date>2012-11-12</date>
+			<notes>
+				- first release
+			</notes>
+		</release>
+	</changelog>
+</package>
