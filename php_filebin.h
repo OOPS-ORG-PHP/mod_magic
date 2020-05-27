@@ -3,9 +3,9 @@
  *
  * php filebin extension.  
  *
- * JoungKyun Kim, <http://www.oops.org> 8/19/2004
+ * JoungKyun.Kim, <http://0ops.org>
  * 
- * Copyright (c) 2015, JoungKyun Kim
+ * Copyright (c) 2020, JoungKyun.Kim
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -34,8 +34,6 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
- * $Id$
  *
  */
 
@@ -70,7 +68,7 @@ PHP_FUNCTION(filebin);
 
 #endif
 
-#define FILEBIN_BUILDVER "3.0.0"
+#define FILEBIN_BUILDVER "3.0.1"
 
 #define phpext_filebin_ptr filebin_module_ptr
 
