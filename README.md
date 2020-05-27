@@ -30,4 +30,4 @@ extension = /path/filebin.so
 
 ## Usage
 
-See also included test.php on source
+See also included sample.php on source

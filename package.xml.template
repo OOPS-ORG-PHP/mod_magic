@@ -33,7 +33,7 @@
 			<file md5sum="@config.m4@" name="config.m4" role="src" />
 			<file md5sum="@filebin.c@" name="filebin.c" role="src" />
 			<file md5sum="@php_filebin.h@" name="php_filebin.h" role="src" />
-			<file md5sum="@test.php@" name="test.php" role="src" />
+			<file md5sum="@sample.php@" name="sample.php" role="src" />
 			<dir name="tests">
 				<file md5sum="@001-enable.phpt@" name="001-enable.phpt" role="test" />
 				<file md5sum="@002-1arg.phpt@" name="002-1arg.phpt" role="test" />
