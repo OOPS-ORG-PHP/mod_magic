@@ -12,7 +12,7 @@ if ( ! extension_loaded ('filebin') ) {
 --FILE--
 <?php
 
-if ( filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) == null )
+if ( filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) == false )
 	echo 'skip';
 else
 	echo "success";

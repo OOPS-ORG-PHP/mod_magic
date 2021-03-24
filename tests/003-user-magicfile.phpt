@@ -11,7 +11,7 @@ if ( ! extension_loaded ('filebin') ) {
 --INI--
 --FILE--
 <?php
-if ( filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc') == null )
+if ( filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc') == false )
 	echo 'skip';
 else
 	echo "using user magic file success";

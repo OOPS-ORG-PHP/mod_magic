@@ -38,11 +38,16 @@ extension = /path/filebin.so
 
 ## Proto types:
 ```php
-filebin (string path, int flag = MAGIC_NONE, string magic_path = MIGIC_FILE): string|NULL
-filebin (string path, string magic_path = MIGIC_FILE, int flag = MAGIC_NONE): string|NULL
+filebin (string path, int flag = MAGIC_NONE, string magic_path = MIGIC_FILE): string|false
+filebin (string path, string magic_path = MIGIC_FILE, int flag = MAGIC_NONE): string|false
 ```
 
 The 2th argument and the 3th argument can be swapped with each other.
+
+**Return value :**
+if success, return mime strings.
+if failure, return false.
+
 
 ## Constant
 Name | Value
@@ -87,7 +92,7 @@ Name | Description
 **Most common usage** :
 ```php
 <?php
-if ( ($buf = filebin ('modules/filebin.so')) != null )
+if ( ($buf = filebin ('modules/filebin.so')) != false )
     echo "$buf\n";
 ?>
 
@@ -98,7 +103,7 @@ ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, Buil
 **Execute with custom MAGIC file** :
 ```php
 <?php
-if ( ($buf = filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc')) != null )
+if ( ($buf = filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
 ?>
 
@@ -108,7 +113,7 @@ ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, Buil
 
 **Get only file mime type** :
 ```php
-if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME_ENCODING)) != null )
+if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME_ENCODING)) != false )
     echo "$buf\n";
 ?>
 
@@ -118,7 +123,7 @@ binary
 
 **Get only file mime type with custom MAGIC file** :
 ```php
-if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != null )
+if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
 ?>
 
@@ -128,7 +133,7 @@ application/x-sharedlib; charset=binary
 
 **Can enable to swap 2th and 3th argument each other** :
 ```php
-if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != null )
+if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
 ?>
 

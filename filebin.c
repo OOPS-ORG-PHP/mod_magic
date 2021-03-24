@@ -151,7 +151,8 @@ PHP_MINIT_FUNCTION(filebin)
 }
 /* }}} */
 
-/* {{{ proto (int|null) filebin(string path, array args_arr, int argc)
+/* {{{ proto filebin(string path[, int flag[, string magic-path]]): string|false
+ *     proto filebin(string path[, string magic-path[, int flag]]): string|false
  */
 PHP_FUNCTION(filebin) {
 	zval         * zflag;
@@ -183,12 +184,12 @@ PHP_FUNCTION(filebin) {
 
 	if ( ZSTR_LEN (path) == 0 ) {
 		php_error (E_WARNING, "The value of 1st argument was empty.");
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	if ( stat (ZSTR_VAL (path), &filestat) != 0 ) {
 		php_error (E_WARNING, "%s file not found.", ZSTR_VAL (path));
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	if ( fargs == 2 ) {
@@ -204,7 +205,7 @@ PHP_FUNCTION(filebin) {
 				break;
 			default :
 				php_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
-				RETURN_NULL ();
+				RETURN_FALSE;
 		}
 	} else if ( fargs == 3 ) {
 		if ( Z_TYPE_P (zflag) == IS_LONG && Z_TYPE_P(zpath) == IS_STRING ) {
@@ -215,7 +216,7 @@ PHP_FUNCTION(filebin) {
 			mpath = Z_STRLEN_P (zflag) ? Z_STRVAL_P (zflag) : MAGIC;
 		} else {
 			php_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
-			RETURN_NULL ();
+			RETURN_FALSE;
 		}
 	}
 
@@ -225,19 +226,19 @@ PHP_FUNCTION(filebin) {
 	magic = magic_open (flag);
 	if ( magic == NULL ) {
 		php_error (E_WARNING, strerror (errno));
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	if ( magic_load (magic, mpath) == -1 ) {
 		php_error (E_WARNING, magic_error (magic));
 		magic_close (magic);
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	if ( (type = magic_file (magic, ZSTR_VAL (path))) == NULL ) {
 		php_error (E_WARNING, magic_error(magic));
 		magic_close (magic);
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	RETVAL_STRING (type);

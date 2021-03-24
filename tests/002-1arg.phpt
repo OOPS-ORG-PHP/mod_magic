@@ -12,7 +12,7 @@ if ( ! extension_loaded ('filebin') ) {
 --FILE--
 <?php
 
-if ( filebin ('modules/filebin.so') == null )
+if ( filebin ('modules/filebin.so') == false )
 	echo 'skip';
 else
 	echo "filebin ('modules/filebin.so') success";
