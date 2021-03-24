@@ -5,8 +5,7 @@
  *
  * JoungKyun.Kim, <http://0ops.org>
  * 
- * Copyright (c) 2020, JoungKyun.Kim
- * All rights reserved.
+ * Copyright 2021. JoungKyun.Kim all rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
