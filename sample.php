@@ -11,7 +11,17 @@ if ( ! extension_loaded ('filebin') ) {
 }
 
 /*
- * flags
+ * Proto Types:
+ *
+ * filebin (string path, int flag = MAGIC_NONE, string magic_file = MAGIC_FILE): string|NULL
+ * filebin (string path, string magic_file = MAGIC_FILE, int flag = MAGIC_NONE): string|NULL
+ * filebin (string path, string magic_file = MAGIC_FILE): string|NULL
+ *
+ * Returns:
+ *
+ *  If true, return magic strings, and fail, return NULL;
+ *
+ * Flags:
  * 
  * MAGIC_NONE
  * MAGIC_DEBUG
@@ -36,18 +46,17 @@ if ( ! extension_loaded ('filebin') ) {
  * MAGIC_NO_CHECK_CDF
  * MAGIC_NO_CHECK_TOKENS
  * MAGIC_NO_CHECK_ENCODING
+ *
+ * Constants:
+ *
+ * MAGIC_FILE => /usr/share/file/magic
  */
 
 echo <<<EOF
   *
-  * USAGE:
-  *        filebin (path[, file_flags = MAGIC_NONE[, magic_file = NULL]]);
-  *        filebin (path[, magic_file = NULL]);
-  *
-  *
   * execute with filebin ('modules/filebin.so');
   *
-  
+
 EOF;
 
 echo filebin ('modules/filebin.so') . "\n";
@@ -57,7 +66,7 @@ echo <<<EOF
   *
   * execute with filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc');
   *
-  
+
 EOF;
 
 echo filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc') . "\n";
@@ -68,7 +77,7 @@ echo <<<EOF
   *
   * execute with filebin ('modules/filebin.so', MAGIC_MIME_ENCODING);
   *
-  
+
 EOF;
 
 echo filebin ('modules/filebin.so', MAGIC_MIME_ENCODING) . "\n";
@@ -78,9 +87,19 @@ echo <<<EOF
   *
   * execute with filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc');
   *
-  
+
 EOF;
 
 echo filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') . "\n";
+
+echo <<<EOF
+
+  *
+  * execute with filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME);
+  *
+
+EOF;
+
+echo filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) . "\n";
 
 ?>

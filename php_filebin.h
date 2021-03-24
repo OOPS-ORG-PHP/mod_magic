@@ -45,9 +45,7 @@
 #define PHP_FILEBIN_API
 #endif
 
-#ifdef ZTS
 #include "TSRM.h"
-#endif
 
 extern zend_module_entry filebin_module_entry;
 #define filebin_module_ptr &filebin_module_entry
@@ -64,21 +62,23 @@ PHP_FUNCTION(filebin);
 #define FILEBIN_G(v) TSRMG(filebin_globals_id, zend_filebin_globals *, v)
 #else
 #define FILEBIN_G(v) (filebin_globals.v)
-
 #endif
 
 #define FILEBIN_BUILDVER "3.0.1"
 
 #define phpext_filebin_ptr filebin_module_ptr
 
-int file_main(int argc, char *argv[]);
+#if PHP_VERSION_ID >= 80000
+#define TSRMLS_CC
+#endif
 
-
-#if ZEND_MODULE_API_NO >= 20151012
+/* Don't use
+ * This code is ob_start
+#if PHP_VERSION_ID >= 70000
 #	define OB_START_BUFFER php_output_start_default()
 #	define OB_GET_BUFFER php_output_get_contents
 #	define OB_END_BUFFER php_output_discard()
-#elif ZEND_MODULE_API_NO >= 20050922
+#elif PHP_VERSION_ID >= 50100
 #	define OB_START_BUFFER php_output_start_default(TSRMLS_C)
 #	define OB_GET_BUFFER php_output_get_contents
 #	define OB_END_BUFFER php_output_discard(TSRMLS_C)
@@ -87,6 +87,7 @@ int file_main(int argc, char *argv[]);
 #	define OB_GET_BUFFER php_ob_get_buffer
 #	define OB_END_BUFFER php_end_ob_buffer(0, 0 TSRMLS_CC);
 #endif
+*/
 
 #endif  /* _MOD_FILEBIN_H */
 

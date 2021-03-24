@@ -2,16 +2,24 @@
 
 ## Description
 
-filebin PHP 확장은 /bin/file 명령의 결과와 동일하게 동작한다.
+This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one FileBin function is provided to make it a simple use.
+
+The filebin function returns the same result as the result of the /bin/file command as a string.
 
 ## Installation
 
 ```bash
 [root@host filebin]$ phpize
-[root@host filebin]$ # --with-libdir 옵션은 64bit 환경에서만 지정합니다.
-[root@host filebin]$ ./configure --with-libdir=lib64
+[root@host filebin]$ ./configure
 [root@host filebin]$ make test PHP_EXECUTABLE=/usr/bin/php
 [root@host filebin]$ make install
+```
+
+If the libmagic library is not in the OS standard path, use the ```--with-filebin=@libMagic_prefix@``` option.
+
+```bash
+[root@host filebin]$ phpize
+[root@host filebin]$ ./configure --with-filebin=/opt/libmagic
 ```
 
 ## Loading
@@ -24,7 +32,7 @@ extension = filebin.so
 
 ; for PHP 7.2 and after
 extension = filebin
-; and also regist with absolute path 
+; and also regist with absolute path
 extension = /path/filebin.so
 ```
 

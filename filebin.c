@@ -61,7 +61,7 @@
 #error "************ PHP version dependency problems *******************"
 #error "This package requires over php 7.0.0 !!"
 #error "If you build with php under 7.0.0, use mod_filebin 2.x version"
-#error "You can download mod_filebin 2.x at http://mirror.oops.org/pub/oops/php/extensions/mod_filebin/"
+#error "You can download mod_filebin 2.x at https://github.com/OOPS-ORG-PHP/mod_filebin/releases"
 #endif
 
 #if HAVE_FILEBIN
@@ -69,11 +69,7 @@
 /* True global resources - no need for thread safety here */
 static int le_filebin;
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_filebin, 0, 0, 1)
-	ZEND_ARG_INFO(0, path)
-	ZEND_ARG_INFO(0, flag)
-	ZEND_ARG_INFO(0, magic)
-ZEND_END_ARG_INFO()
+#include "filebin_arginfo.h"
 
 /* {{{ filebin_functions[]
  *
@@ -148,6 +144,7 @@ PHP_MINIT_FUNCTION(filebin)
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_CDF", MAGIC_NO_CHECK_CDF, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TOKENS", MAGIC_NO_CHECK_TOKENS, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ENCODING", MAGIC_NO_CHECK_ENCODING, CONST_PERSISTENT | CONST_CS);
+	REGISTER_STRING_CONSTANT ("MAGIC_FILE", MAGIC, CONST_PERSISTENT | CONST_CS);
 }
 /* }}} */
 
@@ -155,14 +152,14 @@ PHP_MINIT_FUNCTION(filebin)
  */ 
 PHP_FUNCTION(filebin) {
 	zval         * zflag;
+	zval         * zpath; // path of Magic file
 	zend_string  * path = NULL;
-	zend_string  * mpath = NULL;
-	char         * magicpath = NULL;
+	char         * mpath = NULL;
 	const char   * type;
 	int            flags = 0,
 	               flag = 0,
 	               action = 0, // FILE_LOAD
-	               chkargs = ZEND_NUM_ARGS ();
+	               fargs = ZEND_NUM_ARGS ();
 
 	struct stat    filestat;
 	struct magic_set * magic = NULL;
@@ -178,7 +175,7 @@ PHP_FUNCTION(filebin) {
 	flags |= getenv("POSIXLY_CORRECT") ? MAGIC_SYMLINK : 0;
 #endif
 
-	if ( zend_parse_parameters  ( chkargs, "S|zS", &path, &zflag, &mpath) == FAILURE )
+	if ( zend_parse_parameters  (fargs TSRMLS_CC, "S|zz", &path, &zflag, &zpath) == FAILURE )
 		return;
 
 	if ( ZSTR_LEN (path) == 0 ) {
@@ -187,33 +184,36 @@ PHP_FUNCTION(filebin) {
 	}
 
 	if ( stat (ZSTR_VAL (path), &filestat) != 0 ) {
-		php_error (E_WARNING, "%s is not found.", ZSTR_VAL (path));
+		php_error (E_WARNING, "%s file not found.", ZSTR_VAL (path));
 		RETURN_NULL ();
 	}
 
-	if ( chkargs == 2 ) {
+	if ( fargs == 2 ) {
 		int p = Z_TYPE_P (zflag);
 
 		switch (p) {
 			case IS_STRING :
-				magicpath = Z_STRVAL_P (zflag);
+				mpath = Z_STRVAL_P (zflag);
 				flag = 0;
 				break;
 			case IS_LONG :
 				flag = Z_LVAL_P (zflag);
 				break;
 			default :
-				php_error (E_WARNING, "filebin: Only permit flag or magic file path.");
+				php_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
 				RETURN_NULL ();
 		}
-	} else if ( chkargs == 3 ) {
-		if ( Z_TYPE_P (zflag) != IS_LONG ) {
-			php_error (E_WARNING, "filebin: Only permit flag on 2th argument.");
+	} else if ( fargs == 3 ) {
+		if ( Z_TYPE_P (zflag) == IS_LONG && Z_TYPE_P(zpath) == IS_STRING ) {
+			flag = Z_LVAL_P (zflag);
+			mpath = Z_STRLEN_P (zpath) ? Z_STRVAL_P (zpath) : MAGIC;
+		} else if ( Z_TYPE_P (zflag) == IS_STRING && Z_TYPE_P(zpath) == IS_LONG  ) {
+			flag = Z_LVAL_P (zpath);
+			mpath = Z_STRLEN_P (zflag) ? Z_STRVAL_P (zflag) : MAGIC;
+		} else {
+			php_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
 			RETURN_NULL ();
 		}
-
-		flag = Z_LVAL_P (zflag);
-		magicpath = ZSTR_LEN (mpath) ? ZSTR_VAL (mpath) : NULL;
 	}
 
 	if ( flag )
@@ -225,7 +225,7 @@ PHP_FUNCTION(filebin) {
 		RETURN_NULL ();
 	}
 
-	if ( magic_load (magic, magicpath) == -1 ) {
+	if ( magic_load (magic, mpath) == -1 ) {
 		php_error (E_WARNING, magic_error (magic));
 		magic_close (magic);
 		RETURN_NULL ();
