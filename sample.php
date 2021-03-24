@@ -10,48 +10,6 @@ if ( ! extension_loaded ('filebin') ) {
 		dl ('./modules/filebin.so');
 }
 
-/*
- * Proto Types:
- *
- * filebin (string path, int flag = MAGIC_NONE, string magic_file = MAGIC_FILE): string|NULL
- * filebin (string path, string magic_file = MAGIC_FILE, int flag = MAGIC_NONE): string|NULL
- * filebin (string path, string magic_file = MAGIC_FILE): string|NULL
- *
- * Returns:
- *
- *  If true, return magic strings, and fail, return NULL;
- *
- * Flags:
- * 
- * MAGIC_NONE
- * MAGIC_DEBUG
- * MAGIC_SYMLINK
- * MAGIC_COMPRESS
- * MAGIC_DEVICES
- * MAGIC_MIME_TYPE
- * MAGIC_CONTINUE
- * MAGIC_CHECK
- * MAGIC_PRESERVE_ATIME
- * MAGIC_RAW
- * MAGIC_ERROR
- * MAGIC_MIME_ENCODING
- * MAGIC_MIME
- * MAGIC_APPLE
- * MAGIC_NO_CHECK_COMPRESS
- * MAGIC_NO_CHECK_TAR
- * MAGIC_NO_CHECK_SOFT
- * MAGIC_NO_CHECK_APPTYPE
- * MAGIC_NO_CHECK_ELF
- * MAGIC_NO_CHECK_TEXT
- * MAGIC_NO_CHECK_CDF
- * MAGIC_NO_CHECK_TOKENS
- * MAGIC_NO_CHECK_ENCODING
- *
- * Constants:
- *
- * MAGIC_FILE => /usr/share/file/magic
- */
-
 echo <<<EOF
   *
   * execute with filebin ('modules/filebin.so');

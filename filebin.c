@@ -4,11 +4,11 @@
  * JoungKyun.Kim, <http://oops.org>
  *
  * Copyright 2021. JoungKyun.Kim all rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above
@@ -18,7 +18,7 @@
  *     * Neither the name of the Joseph Miller nor the names of its
  *       contributors may be used to endorse or promote products derived
  *       from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -36,7 +36,7 @@
  *
  */
 
-/* {{{ includes 
+/* {{{ includes
  * */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -144,12 +144,15 @@ PHP_MINIT_FUNCTION(filebin)
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_CDF", MAGIC_NO_CHECK_CDF, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TOKENS", MAGIC_NO_CHECK_TOKENS, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ENCODING", MAGIC_NO_CHECK_ENCODING, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ASCII", MAGIC_NO_CHECK_ASCII, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_FORTRAN", MAGIC_NO_CHECK_FORTRAN, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TROFF", MAGIC_NO_CHECK_TROFF, CONST_PERSISTENT | CONST_CS);
 	REGISTER_STRING_CONSTANT ("MAGIC_FILE", MAGIC, CONST_PERSISTENT | CONST_CS);
 }
 /* }}} */
 
 /* {{{ proto (int|null) filebin(string path, array args_arr, int argc)
- */ 
+ */
 PHP_FUNCTION(filebin) {
 	zval         * zflag;
 	zval         * zpath; // path of Magic file

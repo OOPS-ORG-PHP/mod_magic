@@ -36,6 +36,102 @@ extension = filebin
 extension = /path/filebin.so
 ```
 
+## Proto types:
+```php
+filebin (string path, int flag = MAGIC_NONE, string magic_path = MIGIC_FILE): string|NULL
+filebin (string path, string magic_path = MIGIC_FILE, int flag = MAGIC_NONE): string|NULL
+```
+
+The 2th argument and the 3th argument can be swapped with each other.
+
+## Constant
+Name | Value
+-- | --
+**MAGIC_FILE** | /usr/share/file/magic
+
+## Flags
+See also https://github.com/file/file/blob/master/src/magic.h.in
+
+Name | Description
+-- | --
+**MAGIC_NONE** | No special handling.
+**MAGIC_DEBUG** | Print debugging messages to stderr.
+**MAGIC_SYMLINK** | If the file queried is a symlink, follow it.
+**MAGIC_COMPRESS** | If the file is compressed, unpack it and look at the contents.
+**MAGIC_DEVICES** | If the file is a block or character special device, then open the device and try to look in its contents.
+**MAGIC_MIME_TYPE** | Return a MIME type string, instead of a textual description.
+**MAGIC_MIME_ENCODING** | Return a MIME encoding, instead of a textual description.
+**MAGIC_CONTINUE** | Return all matches, not just the first.
+**MAGIC_CHECK** | Check the magic database for consistency and print warnings to stderr.
+**MAGIC_PRESERVE_ATIME** | On systems that support utime(2) or utimes(2), attempt to preserve the access time of files analyzed.
+**MAGIC_RAW** | Don't translate unprintable characters to a \ooo octal representation.
+**MAGIC_ERROR** | Treat operating system errors while trying to open files and follow symlinks as real errors, instead of printing them in the magic buffer.
+**MAGIC_NO_CHECK_APPTYPE** | Check for EMX application type (only on EMX).
+**MAGIC_NO_CHECK_ASCII** | Check for various types of ascii files.
+**MAGIC_NO_CHECK_COMPRESS** | Don't look for, or inside compressed files.
+**MAGIC_NO_CHECK_ELF** | Don't print elf details.
+**MAGIC_NO_CHECK_FORTRAN** | Don't look for fortran sequences inside ascii files.
+**MAGIC_NO_CHECK_SOFT** | Don't consult magic files.
+**MAGIC_NO_CHECK_TAR** | Don't examine tar files.
+**MAGIC_NO_CHECK_TOKENS** | Don't look for known tokens inside ascii files.
+**MAGIC_NO_CHECK_TROFF** | Don't look for troff sequences inside ascii files.
+**MAGIC_MIME** | Returns MIME type with encoding. (MAGIC_MIME_TYPE\|MAGIC_MIME_ENCODING)
+**MAGIC_APPLE** | Return the Apple creator and type.
+**MAGIC_NO_CHECK_TEXT** | Don't check for text files.
+**MAGIC_NO_CHECK_CDF** | Don't check for cdf files.
+**MAGIC_NO_CHECK_ENCODING** | Don't check text encodings.
+
+
 ## Usage
 
-See also included sample.php on source
+**Most common usage** :
+```php
+<?php
+if ( ($buf = filebin ('modules/filebin.so')) != null )
+    echo "$buf\n";
+?>
+
+Resutl:
+ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=0b1c92efa1398676c226544835a64d0edd68f491, not stripped
+```
+
+**Execute with custom MAGIC file** :
+```php
+<?php
+if ( ($buf = filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc')) != null )
+    echo "$buf\n";
+?>
+
+Result:
+ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=0b1c92efa1398676c226544835a64d0edd68f491, not stripped
+```
+
+**Get only file mime type** :
+```php
+if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME_ENCODING)) != null )
+    echo "$buf\n";
+?>
+
+Result:
+binary
+```
+
+**Get only file mime type with custom MAGIC file** :
+```php
+if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != null )
+    echo "$buf\n";
+?>
+
+Result:
+application/x-sharedlib; charset=binary
+```
+
+**Can enable to swap 2th and 3th argument each other** :
+```php
+if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != null )
+    echo "$buf\n";
+?>
+
+Resut:
+application/x-sharedlib; charset=binary
+```
