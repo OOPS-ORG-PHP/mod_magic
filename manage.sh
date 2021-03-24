@@ -73,17 +73,17 @@ case "${mode}" in
 		;;
 	test)
 		if [[ -f tests/${3}.php ]]; then
-			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=korean.so" tests/${3}.php
+			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=filebin.so" tests/${3}.php
 			exit $?
 		elif [[ -f ${3} ]]; then
-			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=korean.so" ${3}
+			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=filebin.so" ${3}
 			exit $?
 		fi
 
 		if [[ -z $3 ]]; then
 			./manage.sh clean
 			echo "phpize${2} ./configure"
-			phpize${2} && ./configure --with-libdir=lib64 && make -j8 || exit 0
+			phpize${2} && ./configure && make -j8 || exit 0
 		fi
 		echo "make test PHP_EXECUTABLE=/usr/bin/php${2}"
 		make test PHP_EXECUTABLE=/usr/bin/php${2} <<< n
@@ -99,7 +99,7 @@ case "${mode}" in
 			exit 1
 		fi
 		phpcmd="/usr/bin/php80"
-		perl -pi -e 's/ext_functions/korean_functions/g' build/gen_stub.php
+		perl -pi -e 's/ext_functions/filebin_functions/g' build/gen_stub.php
 		${phpcmd} build/gen_stub.php -f *.stub.php
 		;;
 	*)

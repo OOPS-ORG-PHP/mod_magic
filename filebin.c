@@ -178,14 +178,11 @@ PHP_FUNCTION(filebin) {
 	flags |= getenv("POSIXLY_CORRECT") ? MAGIC_SYMLINK : 0;
 #endif
 
-	if (
-		zend_parse_parameters  (
-			chkargs, "S|zS", &path, &zflag, &mpath) == FAILURE
-	   )
+	if ( zend_parse_parameters  ( chkargs, "S|zS", &path, &zflag, &mpath) == FAILURE )
 		return;
 
 	if ( ZSTR_LEN (path) == 0 ) {
-		php_error (E_WARNING, "Must need filename for checking.");
+		php_error (E_WARNING, "The value of 1st argument was empty.");
 		RETURN_NULL ();
 	}
 
