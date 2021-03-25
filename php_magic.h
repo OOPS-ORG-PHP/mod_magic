@@ -81,6 +81,9 @@ PHP_FUNCTION(filemagic);
 #	define OB_END_BUFFER php_end_ob_buffer(0, 0 TSRMLS_CC);
 #endif
 
+#define MAGIC_FILE_SET 0
+#define MAGIC_DATA_SET 1
+
 #endif  /* _MOD_MAGIC_H */
 
 /*

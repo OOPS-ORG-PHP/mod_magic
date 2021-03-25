@@ -56,11 +56,44 @@ EOF;
 echo filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') . "\n";
 
 echo <<<EOF
-  *
-  * execute with filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME);
-  *
 
+  *
+  * execute with filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc', MAGIC_MIME);
+  *
+  
 EOF;
 
-echo filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) . "\n";
+echo filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) . "\n";
+
+echo <<<EOF
+
+  *
+  * \$buf = file_get_contents ('modules/magic.so');
+  * execute with filemagic ('DATA:' . \$buf, MAGIC_MIME);
+  *
+  
+EOF;
+
+$buf = file_get_contents ('modules/magic.so');
+echo filemagic ('DATA:' . $buf, '/usr/share/misc/magic.mgc', MAGIC_MIME) . "\n";
+
+echo <<<EOF
+
+  *
+  * error controls:
+  *
+  * if ( filemagic ('wrong_path', MAGIC_MIME) == false ) {
+  *     ini_set ('track_errors', true);
+  *     echo "## php_errormsg : " . \$php_errormsg . "\\n";
+  *     print_r (error_get_last ());
+  * }
+  *
+  
+EOF;
+
+if ( filemagic ('wrong_path', MAGIC_MIME) == false ) {
+	ini_set ('track_errors', true);
+	echo "## php_errormsg : " . $php_errormsg . "\n";
+	print_r (error_get_last ());
+}
 ?>

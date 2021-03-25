@@ -211,8 +211,9 @@ PHP_FUNCTION(filemagic) {
 	zval         * zpath;
 	char         * path = NULL;
 	char         * mpath = NULL;
-	const char   * type;
-	int            path_len = 0,
+	const char   * buf;
+	int            type = MAGIC_FILE_SET,
+				   path_len = 0,
 				   flags = 0,
 				   flag = 0,
 				   action = 0, // FILE_LOAD
@@ -240,7 +241,18 @@ PHP_FUNCTION(filemagic) {
 		RETURN_FALSE;
 	}
 
-	if ( stat (path, &filestat) != 0 ) {
+	if ( strncmp (path, "DATA:", 5 ) == 0 ) {
+		type = MAGIC_DATA_SET;
+		path += 5;
+		path_len -= 5;
+
+		if ( path_len == 0 ) {
+			magic_set_error (E_WARNING, "The value of 1st argument was empty.");
+			RETURN_FALSE;
+		}
+	}
+
+	if ( type == MAGIC_FILE_SET && stat (path, &filestat) != 0 ) {
 		magic_set_error (E_WARNING, "%s file not found.", path);
 		RETURN_FALSE;
 	}
@@ -300,13 +312,18 @@ PHP_FUNCTION(filemagic) {
 		RETURN_FALSE;
 	}
 
-	if ( (type = magic_file (mp, path)) == NULL ) {
+	if ( type == MAGIC_FILE_SET )
+		buf = magic_file (mp, path);
+	else
+		buf = magic_buffer (mp, path, path_len);
+	
+	if ( buf == NULL ) {
 		magic_set_error (E_WARNING, magic_error(mp));
 		magic_close (mp);
 		RETURN_FALSE;
 	}
 
-	RETVAL_STRING (type, 1);
+	RETVAL_STRING (buf, 1);
 	magic_close (mp);
 }
 /* }}} */
