@@ -1,13 +1,13 @@
 <?php
 
-if ( ! extension_loaded ('filebin') ) {
+if ( ! extension_loaded ('magic') ) {
 	if ( version_compare (PHP_VERSION, '5.4.0', '<') ) {
-		fprintf (STDERR, "filebin extension is not loaded\n");
+		fprintf (STDERR, "magic extension is not loaded\n");
 		exit (1);
 	} else if ( version_compare (PHP_VERSION, '5.3.0', '<') )
-		dl ('filebin.so');
+		dl ('magic.so');
 	else
-		dl ('./modules/filebin.so');
+		dl ('./modules/magic.so');
 }
 
 /*
@@ -41,46 +41,46 @@ if ( ! extension_loaded ('filebin') ) {
 echo <<<EOF
   *
   * USAGE:
-  *        filebin (path[, file_flags = MAGIC_NONE[, magic_file = NULL]]);
-  *        filebin (path[, magic_file = NULL]);
+  *        filemagic (path[, file_flags = MAGIC_NONE[, magic_file = NULL]]);
+  *        filemagic (path[, magic_file = NULL]);
   *
   *
-  * execute with filebin ('modules/filebin.so');
+  * execute with filemagic ('modules/magic.so');
   *
   
 EOF;
 
-echo filebin ('modules/filebin.so') . "\n";
+echo filemagic ('modules/magic.so') . "\n";
 
 echo <<<EOF
 
   *
-  * execute with filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc');
+  * execute with filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc');
   *
   
 EOF;
 
-echo filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc') . "\n";
+echo filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc') . "\n";
 
 
 echo <<<EOF
 
   *
-  * execute with filebin ('modules/filebin.so', MAGIC_MIME_ENCODING);
+  * execute with filemagic ('modules/magic.so', MAGIC_MIME_ENCODING);
   *
   
 EOF;
 
-echo filebin ('modules/filebin.so', MAGIC_MIME_ENCODING) . "\n";
+echo filemagic ('modules/magic.so', MAGIC_MIME_ENCODING) . "\n";
 
 echo <<<EOF
 
   *
-  * execute with filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc');
+  * execute with filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc');
   *
   
 EOF;
 
-echo filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') . "\n";
+echo filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') . "\n";
 
 ?>

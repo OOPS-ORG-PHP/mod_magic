@@ -1,26 +1,25 @@
-$Id$
 
-* mod_filebin 를 빌드하기 위한 조건
+* mod_magic 를 빌드하기 위한 조건
 
 1. file 패키지 또는 file-devel 패키지가 설치 되어 있어야 합니다.
 2. php5 이상이 설치 되어 있어야 합니다.
 
 
-* mod_filebin 설치
+* mod_magic 설치
 
 php extension 은 3가지의 방법으로 빌드를 할 수 있습니다. 또한 빌드를 위해서는
 file 패키지가 설치 되어 있어야 합니다.
 
 1. phpize 를 이용하여 독립적으로  shared extension 으로 빌드
 
-   1) 임의의 디렉토리에 mod_filebin 의 소스를 풀어 놓습니다.
+   1) 임의의 디렉토리에 mod_magic 의 소스를 풀어 놓습니다.
 
       # cd /tmp
-      # tar xvfpj mod_filebin-1.0.0.tar.bz2
+      # tar xvfpj mod_magic-1.0.0.tar.bz2
 
    2) phpize 를 실행하여 빌드를 하기 위한 준비를 합니다.
 
-      # cd mod_filebin-1.0.0
+      # cd mod_magic-1.0.0
       # phpize
 
    3) ./configure 를 실행합니다.
@@ -53,30 +52,30 @@ file 패키지가 설치 되어 있어야 합니다.
       # make
       # make install
 
-   5) php.ini 에서 extension=filebin.so 를 등록한 후, web server 를 재시작 합
+   5) php.ini 에서 extension=magic.so 를 등록한 후, web server 를 재시작 합
       니다.
 
 
-2. --with-filebin=shared 를 이용한 shared extension 으로 빌드
+2. --with-magic=shared 를 이용한 shared extension 으로 빌드
 
    1) php source 를 설치 합니다.
 
       # tar xvjpz php-4.3.8.tar.bz2
 
-   2) ext directory 에 mod_filebin 의 소스를 풀어 놓습니다.
+   2) ext directory 에 mod_magic 의 소스를 풀어 놓습니다.
 
       # cd php-4.3.8/ext
-      # tar xvfpj mod_filebin-1.0.0.tar.bz2
-      # mv mod_filebin-1.0.0 filebin
+      # tar xvfpj mod_magic-1.0.0.tar.bz2
+      # mv mod_magic-1.0.0 magic
 
-   3) configure 에 --with-filebin=shared 옵션을 주고 실행 합니다. file의 라이
+   3) configure 에 --with-magic=shared 옵션을 주고 실행 합니다. file의 라이
       브러리와 헤더파일에 대한 언급은
 
       "1. phpize 를 이용하여 독립적으로 shared extension 으로 빌드"
 
       의 3번 항목을 참고 하십시오.
 
-      # ./configure --with-filebin=shared
+      # ./configure --with-magic=shared
 
    4) 나머지 과정은
 
@@ -85,10 +84,10 @@ file 패키지가 설치 되어 있어야 합니다.
       의 4번 5번 항목을 참고 하십시오.
 
 
-3. --with-filebin 옵션을 이용한 정적인 빌드
+3. --with-magic 옵션을 이용한 정적인 빌드
 
    정적으로 빌드하는 방법은 2번 항목과 동일하며, 2번 항목의 3)번 항목의
-   ./configure 시에 --with-filebintoo과 같이 shared 옵션만 빼고 빌드 하시면
+   ./configure 시에 --with-magic 과 같이 shared 옵션만 빼고 빌드 하시면
    됩니다.
 
 

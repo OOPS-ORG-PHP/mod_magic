@@ -2,7 +2,7 @@
 Check for with MAGIC_MIME flag and user magic file
 --SKIPIF--
 <?php
-if ( ! extension_loaded ('filebin') ) {
+if ( ! extension_loaded ('magic') ) {
     print 'skip';
 }
 ?>
@@ -12,7 +12,7 @@ if ( ! extension_loaded ('filebin') ) {
 --FILE--
 <?php
 
-if ( filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') == null )
+if ( filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') == null )
 	echo 'skip';
 else
 	echo "success";

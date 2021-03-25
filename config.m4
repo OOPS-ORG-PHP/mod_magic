@@ -237,20 +237,20 @@ AC_DEFUN([AC_LIBRARY_CHECKED], [
 
   for i in $LIBSEARCH; do
     if test -f $i/$LIBNAME.$SHLIB_SUFFIX_NAME -o -f $i/$LIBNAME.a; then
-      FILEBIN_LIB_DIR=$i
+      MAGIC_LIB_DIR=$i
       break
     fi
   done
   
-  if test -z "$FILEBIN_LIB_DIR"; then
+  if test -z "$MAGIC_LIB_DIR"; then
     for i in $SEARCH_PATH; do
       if test -f $i/$PHP_LIBDIR/$LIBNAME.$SHLIB_SUFFIX_NAME -o -f $i/$PHP_LIBDIR/$LIBNAME.a ; then
-        FILEBIN_LIB_DIR=$i/$PHP_LIBDIR
+        MAGIC_LIB_DIR=$i/$PHP_LIBDIR
         break
       fi
     done
 
-    if test -z "$FILEBIN_LIB_DIR"; then
+    if test -z "$MAGIC_LIB_DIR"; then
       AC_MSG_ERROR([$LIBNAME.(a|so) not found.])
     fi
   fi
@@ -262,39 +262,39 @@ AC_DEFUN([AC_STATIC_LIBRARY_CHECKED], [
 
   for i in $LIBSEARCH; do
     if test -f $i/$LIBNAME.a; then
-      FILEBIN_LIB_DIR=$i
+      MAGIC_LIB_DIR=$i
       break
     fi
   done
   
-  if test -z "$FILEBIN_LIB_DIR"; then
+  if test -z "$MAGIC_LIB_DIR"; then
     for i in $SEARCH_PATH; do
       if test -f $i/$PHP_LIBDIR/$LIBNAME.a ; then
-        FILEBIN_LIB_DIR=$i/$PHP_LIBDIR
+        MAGIC_LIB_DIR=$i/$PHP_LIBDIR
         break
       fi
     done
 
-    if test -z "$FILEBIN_LIB_DIR"; then
+    if test -z "$MAGIC_LIB_DIR"; then
       AC_MSG_ERROR([$LIBNAME.a not found.])
     else
-      LDFLAGS="$LDFLAGS $FILEBIN_LIB_DIR/$LIBNAME.a"
+      LDFLAGS="$LDFLAGS $MAGIC_LIB_DIR/$LIBNAME.a"
     fi
   fi
 ])
 
-PHP_ARG_WITH(filebin, for filebin support,
-[  --with-filebin[=DIR]      Include filebin support.  DIR is the file
+PHP_ARG_WITH(magic, for file magic support,
+[  --with-magic[=DIR]      Include file magic support.  DIR is the file
                           install directory.])
 
 if test "x$PHP_EXECUTABLE" = "xNONE"; then
 	PHP_EXECUTABLE="/usr/bin/php"
 fi
 
-if test "$PHP_FILEBIN" != "no"; then
-  AC_DEFINE(HAVE_FILEBIN,1,[ ])
+if test "$PHP_MAGIC" != "no"; then
+  AC_DEFINE(HAVE_MAGIC,1,[ ])
 
-  FILEBIN_PARAMETER=$CFLAGS
+  MAGIC_PARAMETER=$CFLAGS
   PHP_SUBST(CPPFLAGS)
   PHP_SUBST(LDFLAGS)
 
@@ -334,21 +334,21 @@ if test "$PHP_FILEBIN" != "no"; then
   HEASEARCH=`echo $CPPFLAGS | sed 's/-I//g'`
   for i in $HEASEARCH; do
     if test -f $i/magic.h; then
-      FILEBIN_HEADER_DIR=$i
+      MAGIC_HEADER_DIR=$i
       break
     fi
   done
 
-  SEARCH_PATH="$PHP_FILEBIN /usr /usr/local /opt/file /usr/local/file"
-  if test -z "$FILEBIN_HEADER_DIR"; then
+  SEARCH_PATH="$PHP_MAGIC /usr /usr/local /opt/file /usr/local/file"
+  if test -z "$MAGIC_HEADER_DIR"; then
     for i in $SEARCH_PATH; do
       if test -f $i/include/magic.h; then
-        FILEBIN_HEADER_DIR=$i/include
+        MAGIC_HEADER_DIR=$i/include
         break
       fi
     done
 
-    if test -z "$FILEBIN_HEADER_DIR"; then
+    if test -z "$MAGIC_HEADER_DIR"; then
       AC_MSG_ERROR([Unable to find magic.h anywhere under $CPPFLAGS $SEARCH_PATH])
     fi
   fi
@@ -363,26 +363,26 @@ dnl   LIBSEARCH=`echo $LDFLAGS | sed 's/-L//g'`
 dnl 
 dnl   for i in $LIBSEARCH; do
 dnl     if test -f $i/libmagic.$SHLIB_SUFFIX_NAME -o -f $i/libmagic.a; then
-dnl       FILEBIN_LIB_DIR=$i
+dnl       MAGIC_LIB_DIR=$i
 dnl       break
 dnl     fi
 dnl   done
 dnl 
-dnl   if test -z "$FILEBIN_LIB_DIR"; then
+dnl   if test -z "$MAGIC_LIB_DIR"; then
 dnl     for i in $SEARCH_PATH; do
 dnl       if test -f $i/$PHP_LIBDIR/libmagic.$SHLIB_SUFFIX_NAME -o -f $i/$PHP_LIBDIR/libmagic.a ; then
-dnl         FILEBIN_LIB_DIR=$i/$PHP_LIBDIR
+dnl         MAGIC_LIB_DIR=$i/$PHP_LIBDIR
 dnl         break
 dnl       fi
 dnl     done
 dnl     
-dnl     if test -z "$FILEBIN_LIB_DIR"; then
+dnl     if test -z "$MAGIC_LIB_DIR"; then
 dnl       AC_MSG_ERROR([libmagic.(a|so) not found.])
 dnl     fi
 dnl   fi
 
   AC_MSG_CHECKING(for magic library)
-  AC_MSG_RESULT($FILEBIN_LIB_DIR)
+  AC_MSG_RESULT($MAGIC_LIB_DIR)
 
   AC_CHECK_LIB(z,gzopen)
 
@@ -423,14 +423,14 @@ dnl   fi
 
   extra_src=""
 
-  PHP_EXPAND_PATH($FILEBIN_HEADER_DIR, FILEBIN_HEADER_DIR)
-  PHP_ADD_INCLUDE($FILEBIN_HEADER_DIR)
+  PHP_EXPAND_PATH($MAGIC_HEADER_DIR, MAGIC_HEADER_DIR)
+  PHP_ADD_INCLUDE($MAGIC_HEADER_DIR)
   if test "x$with_static_link" != "xyes"; then
-    PHP_ADD_LIBRARY_WITH_PATH(magic, $FILEBIN_LIB_DIR, FILEBIN_SHARED_LIBADD)
+    PHP_ADD_LIBRARY_WITH_PATH(magic, $MAGIC_LIB_DIR, MAGIC_SHARED_LIBADD)
   fi
-  PHP_SUBST(FILEBIN_PARAMTER)
-  PHP_SUBST(FILEBIN_SHARED_LIBADD)
+  PHP_SUBST(MAGIC_PARAMTER)
+  PHP_SUBST(MAGIC_SHARED_LIBADD)
 
 
-  PHP_NEW_EXTENSION(filebin, filebin.c $extra_src, $ext_shared,, \\$(FILEBIN_PARAMETER))
+  PHP_NEW_EXTENSION(magic, magic.c $extra_src, $ext_shared,, \\$(MAGIC_PARAMETER))
 fi

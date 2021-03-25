@@ -1,5 +1,5 @@
 /*
- * filebin.c
+ * magic.c
  *
  * JoungKyun Kim, <http://devel.oops.org>
  *
@@ -57,68 +57,68 @@
 
 #include <fcntl.h>
 #include <magic.h>
-#include "php_filebin.h"
+#include "php_magic.h"
 /* }}} */
 
-#if HAVE_FILEBIN
+#if HAVE_MAGIC
 
 /* True global resources - no need for thread safety here */
-static int le_filebin;
+static int le_magic;
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_filebin, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_magic, 0, 0, 1)
 	ZEND_ARG_INFO(0, path)
 	ZEND_ARG_INFO(0, flag)
-	ZEND_ARG_INFO(0, magic)
+	ZEND_ARG_INFO(0, magicpath)
 ZEND_END_ARG_INFO()
 
-/* {{{ filebin_functions[]
+/* {{{ magic_functions[]
  *
- * Every user visible function must have an entry in filebin_functions[].
+ * Every user visible function must have an entry in magic_functions[].
  */
-const zend_function_entry filebin_functions[] = {
-	PHP_FE(filebin, arginfo_filebin)
+const zend_function_entry magic_functions[] = {
+	PHP_FE(filemagic, arginfo_magic)
 	{NULL, NULL, NULL}
 };
 /* }}} */
 
-/* {{{ filebin_module_entry
+/* {{{ magic_module_entry
  */
-zend_module_entry filebin_module_entry = {
+zend_module_entry magic_module_entry = {
 #if ZEND_MODULE_API_NO >= 20010901
 	STANDARD_MODULE_HEADER,
 #endif
-	"filebin",
-	filebin_functions,
-	PHP_MINIT(filebin),
+	"magic",
+	magic_functions,
+	PHP_MINIT(magic),
 	NULL,
 	NULL,
 	NULL,
-	PHP_MINFO(filebin),
+	PHP_MINFO(magic),
 #if ZEND_MODULE_API_NO >= 20010901
-	FILEBIN_BUILDVER,
+	MAGIC_BUILDVER,
 #endif
 	STANDARD_MODULE_PROPERTIES,
 };
 /* }}} */
 
-#ifdef COMPILE_DL_FILEBIN
-ZEND_GET_MODULE(filebin)
+#ifdef COMPILE_DL_MAGIC
+ZEND_GET_MODULE(magic)
 #endif
 
 /* {{{ PHP_MINFO_FUNCTION
  */
-PHP_MINFO_FUNCTION(filebin)
+PHP_MINFO_FUNCTION(magic)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "filebin support", "enabled");
-	php_info_print_table_row(2, "Build version", FILEBIN_BUILDVER);
+	php_info_print_table_header(2, "magic support", "enabled");
+	php_info_print_table_row(2, "Build version", MAGIC_BUILDVER);
 	php_info_print_table_end();
 }
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
-PHP_MINIT_FUNCTION(filebin)
+PHP_MINIT_FUNCTION(magic)
 {
 	// magic flags
 	REGISTER_LONG_CONSTANT ("MAGIC_NONE", MAGIC_NONE, CONST_PERSISTENT | CONST_CS);
@@ -147,9 +147,9 @@ PHP_MINIT_FUNCTION(filebin)
 }
 /* }}} */
 
-/* {{{ proto (int|null) filebin(string path, array args_arr, int argc)
+/* {{{ proto (string|null) filemagic(string path, int flag, string magicpath)
  */ 
-PHP_FUNCTION(filebin) {
+PHP_FUNCTION(filemagic) {
 	zval         * zflag;
 	char         * path = NULL;
 	char         * magicpath = NULL;
@@ -162,7 +162,7 @@ PHP_FUNCTION(filebin) {
 				   chkargs = ZEND_NUM_ARGS ();
 
 	struct stat    filestat;
-	struct magic_set * magic = NULL;
+	struct magic_set * mp = NULL;
 
 
 	HashTable    * args_arr = NULL;
@@ -204,12 +204,12 @@ PHP_FUNCTION(filebin) {
 				flag = Z_LVAL_P (zflag);
 				break;
 			default :
-				php_error (E_WARNING, "filebin: Only permit flag or magic file path.");
+				php_error (E_WARNING, "magic: Only permit flag or magic file path.");
 				RETURN_NULL ();
 		}
 	} else if ( chkargs == 3 ) {
 		if ( Z_TYPE_P (zflag) != IS_LONG ) {
-			php_error (E_WARNING, "filebin: Only permit flag on 2th argument.");
+			php_error (E_WARNING, "magic: Only permit flag on 2th argument.");
 			RETURN_NULL ();
 		}
 
@@ -219,30 +219,30 @@ PHP_FUNCTION(filebin) {
 	if ( flag )
 		flags |= flag;
 
-	magic = magic_open (flag);
-	if ( magic == NULL ) {
+	mp = magic_open (flag);
+	if ( mp == NULL ) {
 		php_error (E_WARNING, strerror (errno));
 		RETURN_NULL ();
 	}
 
-	if ( magic_load (magic, magicpath) == -1 ) {
-		php_error (E_WARNING, magic_error (magic));
-		magic_close (magic);
+	if ( magic_load (mp, magicpath) == -1 ) {
+		php_error (E_WARNING, magic_error (mp));
+		magic_close (mp);
 		RETURN_NULL ();
 	}
 
-	if ( (type = magic_file (magic, path)) == NULL ) {
-		php_error (E_WARNING, magic_error(magic));
-		magic_close (magic);
+	if ( (type = magic_file (mp, path)) == NULL ) {
+		php_error (E_WARNING, magic_error(mp));
+		magic_close (mp);
 		RETURN_NULL ();
 	}
 
 	RETVAL_STRING (type, 1);
-	magic_close (magic);
+	magic_close (mp);
 }
 /* }}} */
 
-#endif	/* HAVE_FILEBIN */
+#endif	/* HAVE_MAGIC */
 
 /*
  * Local variables:

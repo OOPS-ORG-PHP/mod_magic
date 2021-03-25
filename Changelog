@@ -1,6 +1,11 @@
 $Id$
 
-PHP filebin Extensoin Changelog
+PHP file magic Extensoin Changelog
+
+* 2.0.1
+--------------------------------------------------------------------------------
+* Thu Mar 25 2021 JoungKyun.Kim <http://oops.org>
+- change package name to mod_magic from mod_filebin (#6)
 
 * 2.0.0
 --------------------------------------------------------------------------------

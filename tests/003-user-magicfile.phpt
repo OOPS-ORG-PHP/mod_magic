@@ -2,7 +2,7 @@
 Check for using user magic file
 --SKIPIF--
 <?php
-if ( ! extension_loaded ('filebin') ) {
+if ( ! extension_loaded ('magic') ) {
     print 'skip';
 }
 ?>
@@ -11,7 +11,7 @@ if ( ! extension_loaded ('filebin') ) {
 --INI--
 --FILE--
 <?php
-if ( filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc') == null )
+if ( filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc') == null )
 	echo 'skip';
 else
 	echo "using user magic file success";
