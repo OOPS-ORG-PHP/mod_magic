@@ -74,6 +74,7 @@ ZEND_END_ARG_INFO()
  */
 const zend_function_entry magic_functions[] = {
 	PHP_FE(filemagic, arginfo_magic)
+	PHP_FALIAS(filebin, filemagic, arginfo_magic)
 	{NULL, NULL, NULL}
 };
 /* }}} */
