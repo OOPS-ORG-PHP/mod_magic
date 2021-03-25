@@ -195,10 +195,11 @@ ZEND_FUNCTION(filemagic) {
 		switch (p) {
 			case IS_STRING :
 				mpath = Z_STRVAL_P (zflag);
-				flag = 0;
+				flag = MAGIC_NONE;
 				break;
 			case IS_LONG :
 				flag = Z_LVAL_P (zflag);
+				mpath = MAGIC;
 				break;
 			default :
 				php_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
