@@ -76,7 +76,8 @@ static int le_magic;
  * Every user visible function must have an entry in magic_functions[].
  */
 const zend_function_entry magic_functions[] = {
-	ZEND_FE(filemagic, arginfo_filemagic)
+	ZEND_FE (filemagic, arginfo_filemagic)
+	ZEND_FALIAS (filebin, filemagic, arginfo_filemagic)
 	{NULL, NULL, NULL}
 };
 /* }}} */
