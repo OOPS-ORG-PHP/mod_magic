@@ -6,6 +6,8 @@ This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.f
 
 The filemagic function returns the same result as the result of the /bin/file command as a string.
 
+***The v2 branch*** supports PHP3 through PHP 5. For PHP 7 and above, use the mater branch.
+
 ## Installation
 
 ```bash
