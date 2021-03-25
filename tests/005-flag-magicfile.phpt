@@ -12,7 +12,7 @@ if ( ! extension_loaded ('magic') ) {
 --FILE--
 <?php
 
-if ( filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') == null )
+if ( filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') == false )
 	echo 'skip';
 else
 	echo "success";

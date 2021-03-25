@@ -65,7 +65,7 @@ static int le_magic;
 ZEND_BEGIN_ARG_INFO_EX(arginfo_magic, 0, 0, 1)
 	ZEND_ARG_INFO(0, path)
 	ZEND_ARG_INFO(0, flag)
-	ZEND_ARG_INFO(0, magicpath)
+	ZEND_ARG_INFO(0, mpath)
 ZEND_END_ARG_INFO()
 
 /* {{{ magic_functions[]
@@ -137,18 +137,22 @@ PHP_MINIT_FUNCTION(magic)
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_CDF", MAGIC_NO_CHECK_CDF, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TOKENS", MAGIC_NO_CHECK_TOKENS, CONST_PERSISTENT | CONST_CS);
 	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ENCODING", MAGIC_NO_CHECK_ENCODING, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_ASCII", MAGIC_NO_CHECK_ASCII, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_FORTRAN", MAGIC_NO_CHECK_FORTRAN, CONST_PERSISTENT | CONST_CS);
+	REGISTER_LONG_CONSTANT ("MAGIC_NO_CHECK_TROFF", MAGIC_NO_CHECK_TROFF, CONST_PERSISTENT | CONST_CS);
+	REGISTER_STRING_CONSTANT ("MAGIC_FILE", MAGIC, CONST_PERSISTENT | CONST_CS);
 }
 /* }}} */
 
-/* {{{ proto (string|null) filemagic(string path, int flag, string magicpath)
+/* {{{ proto (string|null) filemagic(string path, int flag, string mpath)
  */ 
 PHP_FUNCTION(filemagic) {
 	zval         * zflag;
+	zval         * zpath;
 	char         * path = NULL;
-	char         * magicpath = NULL;
+	char         * mpath = NULL;
 	const char   * type;
 	int            path_len = 0,
-				   magic_len = 0,
 				   flags = 0,
 				   flag = 0,
 				   action = 0, // FILE_LOAD
@@ -168,21 +172,17 @@ PHP_FUNCTION(filemagic) {
 	flags |= getenv("POSIXLY_CORRECT") ? MAGIC_SYMLINK : 0;
 #endif
 
-	if (
-		zend_parse_parameters  (
-			chkargs TSRMLS_CC,
-			"s|zs", &path, &path_len, &zflag, &magicpath, &magic_len) == FAILURE
-	   )
+	if ( zend_parse_parameters (chkargs TSRMLS_CC, "s|zz", &path, &path_len, &zflag, &zpath) == FAILURE )
 		return;
 
 	if ( path_len == 0 ) {
-		php_error (E_WARNING, "Must need filename for checking.");
-		RETURN_NULL ();
+		php_error (E_WARNING, "The value of 1st argument was empty.");
+		RETURN_FALSE;
 	}
 
 	if ( stat (path, &filestat) != 0 ) {
-		php_error (E_WARNING, "%s is not found.", path);
-		RETURN_NULL ();
+		php_error (E_WARNING, "%s file not found.", path);
+		RETURN_FALSE;
 	}
 
 	if ( chkargs == 2 ) {
@@ -190,23 +190,28 @@ PHP_FUNCTION(filemagic) {
 
 		switch (p) {
 			case IS_STRING :
-				magicpath = Z_STRVAL_P (zflag);
-				flag = 0;
+				mpath = Z_STRVAL_P (zflag);
+				flag = MAGIC_NONE;
 				break;
 			case IS_LONG :
 				flag = Z_LVAL_P (zflag);
+				mpath = MAGIC;
 				break;
 			default :
-				php_error (E_WARNING, "magic: Only permit flag or magic file path.");
-				RETURN_NULL ();
+				php_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
+				RETURN_FALSE;
 		}
 	} else if ( chkargs == 3 ) {
-		if ( Z_TYPE_P (zflag) != IS_LONG ) {
-			php_error (E_WARNING, "magic: Only permit flag on 2th argument.");
-			RETURN_NULL ();
+		if ( Z_TYPE_P (zflag) == IS_LONG && Z_TYPE_P(zpath) == IS_STRING ) {
+			flag = Z_LVAL_P (zflag);
+			mpath = Z_STRLEN_P (zpath) ? Z_STRVAL_P (zpath) : MAGIC;
+		} else if ( Z_TYPE_P (zflag) == IS_STRING && Z_TYPE_P(zpath) == IS_LONG  ) {
+			flag = Z_LVAL_P (zpath);
+			mpath = Z_STRLEN_P (zflag) ? Z_STRVAL_P (zflag) : MAGIC;
+		} else {
+			php_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
+			RETURN_FALSE;
 		}
-
-		flag = Z_LVAL_P (zflag);
 	}
 
 	if ( flag )
@@ -215,19 +220,19 @@ PHP_FUNCTION(filemagic) {
 	mp = magic_open (flag);
 	if ( mp == NULL ) {
 		php_error (E_WARNING, strerror (errno));
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
-	if ( magic_load (mp, magicpath) == -1 ) {
+	if ( magic_load (mp, mpath) == -1 ) {
 		php_error (E_WARNING, magic_error (mp));
 		magic_close (mp);
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	if ( (type = magic_file (mp, path)) == NULL ) {
 		php_error (E_WARNING, magic_error(mp));
 		magic_close (mp);
-		RETURN_NULL ();
+		RETURN_FALSE;
 	}
 
 	RETVAL_STRING (type, 1);

@@ -11,7 +11,7 @@ if ( ! extension_loaded ('magic') ) {
 --INI--
 --FILE--
 <?php
-if ( filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc') == null )
+if ( filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc') == false )
 	echo 'skip';
 else
 	echo "using user magic file success";

@@ -12,7 +12,7 @@ if ( ! extension_loaded ('magic') ) {
 --FILE--
 <?php
 
-if ( filemagic ('modules/magic.so', MAGIC_MIME_ENCODING) == null )
+if ( filemagic ('modules/magic.so', MAGIC_MIME_ENCODING) == false )
 	echo 'skip';
 else
 	echo "using with MAGIC_MIME_ENCODING flag success";

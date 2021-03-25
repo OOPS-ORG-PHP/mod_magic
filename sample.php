@@ -17,11 +17,6 @@ if ( ! extension_loaded ('magic') ) {
 
 echo <<<EOF
   *
-  * USAGE:
-  *        filemagic (path[, file_flags = MAGIC_NONE[, magic_file = NULL]]);
-  *        filemagic (path[, magic_file = NULL]);
-  *
-  *
   * execute with filemagic ('modules/magic.so');
   *
   
@@ -60,4 +55,12 @@ EOF;
 
 echo filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc') . "\n";
 
+echo <<<EOF
+  *
+  * execute with filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME);
+  *
+
+EOF;
+
+echo filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) . "\n";
 ?>
