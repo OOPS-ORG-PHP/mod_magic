@@ -3,10 +3,7 @@
  *
  * php magic extension.  
  *
- * JoungKyun Kim, <http://www.oops.org> 8/19/2004
- * 
- * Copyright (c) 2015, JoungKyun Kim
- * All rights reserved.
+ * Copyright 2021. JoungKyun.Kim all rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -70,14 +67,11 @@ PHP_FUNCTION(filemagic);
 
 #endif
 
-#define MAGIC_BUILDVER "2.0.0"
+#define MAGIC_BUILDVER "2.0.1"
 
 #define phpext_magic_ptr magic_module_ptr
 
-int file_main(int argc, char *argv[]);
-
-
-#if ZEND_MODULE_API_NO >= 20050922
+#if PHP_VERSION_ID >= 50100
 #	define OB_START_BUFFER php_output_start_default(TSRMLS_C)
 #	define OB_GET_BUFFER php_output_get_contents
 #	define OB_END_BUFFER php_output_discard(TSRMLS_C)

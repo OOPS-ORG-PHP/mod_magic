@@ -1,6 +1,11 @@
 <?php
 
 if ( ! extension_loaded ('magic') ) {
+	if ( ! ini_get (enable_dl) ) {
+		fprintf (STDERR, "Can't load magic extension. enable_dl is disabled\n");
+		exit (1);
+	}
+
 	if ( version_compare (PHP_VERSION, '5.4.0', '<') ) {
 		fprintf (STDERR, "magic extension is not loaded\n");
 		exit (1);
@@ -9,34 +14,6 @@ if ( ! extension_loaded ('magic') ) {
 	else
 		dl ('./modules/magic.so');
 }
-
-/*
- * flags
- * 
- * MAGIC_NONE
- * MAGIC_DEBUG
- * MAGIC_SYMLINK
- * MAGIC_COMPRESS
- * MAGIC_DEVICES
- * MAGIC_MIME_TYPE
- * MAGIC_CONTINUE
- * MAGIC_CHECK
- * MAGIC_PRESERVE_ATIME
- * MAGIC_RAW
- * MAGIC_ERROR
- * MAGIC_MIME_ENCODING
- * MAGIC_MIME
- * MAGIC_APPLE
- * MAGIC_NO_CHECK_COMPRESS
- * MAGIC_NO_CHECK_TAR
- * MAGIC_NO_CHECK_SOFT
- * MAGIC_NO_CHECK_APPTYPE
- * MAGIC_NO_CHECK_ELF
- * MAGIC_NO_CHECK_TEXT
- * MAGIC_NO_CHECK_CDF
- * MAGIC_NO_CHECK_TOKENS
- * MAGIC_NO_CHECK_ENCODING
- */
 
 echo <<<EOF
   *

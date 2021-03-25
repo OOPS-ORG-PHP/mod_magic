@@ -73,10 +73,10 @@ case "${mode}" in
 		;;
 	test)
 		if [[ -f tests/${3}.php ]]; then
-			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=magic" tests/${3}.php
+			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=magic.so" tests/${3}.php
 			exit $?
 		elif [[ -f ${3} ]]; then
-			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=magic" ${3}
+			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=magic.so" ${3}
 			exit $?
 		fi
 

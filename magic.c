@@ -1,10 +1,7 @@
 /*
  * magic.c
  *
- * JoungKyun Kim, <http://devel.oops.org>
- *
- * Copyright (c) 2015, JoungKyun.Kim
- * All rights reserved.
+ * Copyright 2015. JoungKyun.Kim all rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -84,9 +81,7 @@ const zend_function_entry magic_functions[] = {
 /* {{{ magic_module_entry
  */
 zend_module_entry magic_module_entry = {
-#if ZEND_MODULE_API_NO >= 20010901
 	STANDARD_MODULE_HEADER,
-#endif
 	"magic",
 	magic_functions,
 	PHP_MINIT(magic),
@@ -94,9 +89,7 @@ zend_module_entry magic_module_entry = {
 	NULL,
 	NULL,
 	PHP_MINFO(magic),
-#if ZEND_MODULE_API_NO >= 20010901
 	MAGIC_BUILDVER,
-#endif
 	STANDARD_MODULE_PROPERTIES,
 };
 /* }}} */
@@ -110,7 +103,7 @@ ZEND_GET_MODULE(magic)
 PHP_MINFO_FUNCTION(magic)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "magic support", "enabled");
+	php_info_print_table_header(2, "file magic support", "enabled");
 	php_info_print_table_row(2, "Build version", MAGIC_BUILDVER);
 	php_info_print_table_end();
 }
