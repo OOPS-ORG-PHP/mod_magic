@@ -89,7 +89,7 @@ Name | Description
 
 ## Usage
 
-**Most common usage** :
+**Most common usage :**
 ```php
 <?php
 if ( ($buf = filemagic ('modules/magic.so')) != false )
@@ -100,7 +100,7 @@ Resutl:
 ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=0b1c92efa1398676c226544835a64d0edd68f491, not stripped
 ```
 
-**Execute with custom MAGIC file** :
+**Execute with custom MAGIC file :**
 ```php
 <?php
 if ( ($buf = filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc')) != false )
@@ -111,7 +111,7 @@ Result:
 ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, BuildID[sha1]=0b1c92efa1398676c226544835a64d0edd68f491, not stripped
 ```
 
-**Get only file mime type** :
+**Get only file mime type :**
 ```php
 if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME_ENCODING)) != false )
     echo "$buf\n";
@@ -121,7 +121,7 @@ Result:
 binary
 ```
 
-**Get only file mime type with custom MAGIC file** :
+**Get only file mime type with custom MAGIC file :**
 ```php
 if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
@@ -131,7 +131,7 @@ Result:
 application/x-sharedlib; charset=binary
 ```
 
-**Can enable to swap 2th and 3th argument each other** :
+**Can enable to swap 2th and 3th argument each other :**
 ```php
 if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
@@ -140,6 +140,19 @@ if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.m
 Resut:
 application/x-sharedlib; charset=binary
 ```
+
+**filemagic buffer control :**
+```php
+$buf = file_get_contents ('./php_magic.h');
+if ( ($buf = filemagic ('DATA:' . $fbuf, MAGIC_MIME) != false ) {
+	echo $buf . "\n";
+}
+
+Result:
+text/x-c; charset=us-ascii
+```
+- if want to get file magic information with buffer data instead of file, use 'DATA:' prefix.
+
 
 **filemagic function error control :**
 ```php

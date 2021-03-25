@@ -89,6 +89,9 @@ ZEND_FUNCTION(filemagic);
 #endif
 */
 
+#define MAGIC_FILE_SET 0
+#define MAGIC_DATA_SET 1
+
 #endif  /* _MOD_MAGIC_H */
 
 /*

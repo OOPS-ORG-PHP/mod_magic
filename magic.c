@@ -249,17 +249,17 @@ static void magic_set_error (int type, const char * format, ...) {
 ZEND_FUNCTION(filemagic) {
 	zval         * zflag;
 	zval         * zpath; // path of Magic file
-	zend_string  * path = NULL;
-	char         * mpath = NULL;
-	const char   * type;
-	int            flags = 0,
-	               flag = 0,
+	zend_string  * path   = NULL;
+	char         * mpath  = NULL;
+	const char   * buf;
+	int            type   = MAGIC_FILE_SET,
+	               flags  = 0,
+	               flag   = 0,
 	               action = 0, // FILE_LOAD
-	               fargs = ZEND_NUM_ARGS ();
+	               fargs  = ZEND_NUM_ARGS ();
 
 	struct stat    filestat;
 	struct magic_set * mp = NULL;
-
 
 	HashTable    * args_arr = NULL;
 	HashPosition   pos;
@@ -279,7 +279,16 @@ ZEND_FUNCTION(filemagic) {
 		RETURN_FALSE;
 	}
 
-	if ( stat (ZSTR_VAL (path), &filestat) != 0 ) {
+	if ( strncmp (ZSTR_VAL (path), "DATA:", 5) == 0 ) {
+		type = MAGIC_DATA_SET;
+
+		if ( (ZSTR_LEN (path) - 5) < 1 ) {
+			magic_set_error (E_WARNING, "The value of 1st argument was empty.");
+			RETURN_FALSE;
+		}
+	}
+
+	if ( type == MAGIC_FILE_SET && stat (ZSTR_VAL (path), &filestat) != 0 ) {
 		magic_set_error (E_WARNING, "%s file not found.", ZSTR_VAL (path));
 		RETURN_FALSE;
 	}
@@ -328,13 +337,18 @@ ZEND_FUNCTION(filemagic) {
 		RETURN_FALSE;
 	}
 
-	if ( (type = magic_file (mp, ZSTR_VAL (path))) == NULL ) {
+	if ( type == MAGIC_FILE_SET )
+		buf = magic_file (mp, ZSTR_VAL (path));
+	else
+		buf = magic_buffer (mp, ZSTR_VAL (path) + 5, ZSTR_LEN (path) - 5);
+
+	if ( buf == NULL ) {
 		magic_set_error (E_WARNING, magic_error(mp));
 		magic_close (mp);
 		RETURN_FALSE;
 	}
 
-	RETVAL_STRING (type);
+	RETVAL_STRING (buf);
 	magic_close (mp);
 }
 /* }}} */
