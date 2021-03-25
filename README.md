@@ -1,45 +1,45 @@
-# PHP file extension
+# PHP file magic extension
 
 ## Description
 
 This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one FileBin function is provided to make it a simple use.
 
-The filebin function returns the same result as the result of the /bin/file command as a string.
+The filemagic function returns the same result as the result of the /bin/file command as a string.
 
 ## Installation
 
 ```bash
-[root@host filebin]$ phpize
-[root@host filebin]$ ./configure
-[root@host filebin]$ make test PHP_EXECUTABLE=/usr/bin/php
-[root@host filebin]$ make install
+[root@host magic]$ phpize
+[root@host magic]$ ./configure
+[root@host magic]$ make test PHP_EXECUTABLE=/usr/bin/php
+[root@host magic]$ make install
 ```
 
-If the libmagic library is not in the OS standard path, use the ```--with-filebin=@libMagic_prefix@``` option.
+If the libmagic library is not in the OS standard path, use the ```--with-magic=@libMagic_prefix@``` option.
 
 ```bash
-[root@host filebin]$ phpize
-[root@host filebin]$ ./configure --with-filebin=/opt/libmagic
+[root@host magic]$ phpize
+[root@host magic]$ ./configure --with-magic=/opt/libmagic
 ```
 
 ## Loading
 
-regist filebin.so in php.ini or php sub configuration.
+regist magic.so in php.ini or php sub configuration.
 
 ```ini
 ; for PHP 7.1 and before
-extension = filebin.so
+extension = magic.so
 
 ; for PHP 7.2 and after
-extension = filebin
+extension = magic
 ; and also regist with absolute path
-extension = /path/filebin.so
+extension = /path/magic.so
 ```
 
 ## Proto types:
 ```php
-filebin (string path, int flag = MAGIC_NONE, string magic_path = MIGIC_FILE): string|false
-filebin (string path, string magic_path = MIGIC_FILE, int flag = MAGIC_NONE): string|false
+filemagic (string path, int flag = MAGIC_NONE, string magic_path = MIGIC_FILE): string|false
+filemagic (string path, string magic_path = MIGIC_FILE, int flag = MAGIC_NONE): string|false
 ```
 
 The 2th argument and the 3th argument can be swapped with each other.
@@ -92,7 +92,7 @@ Name | Description
 **Most common usage** :
 ```php
 <?php
-if ( ($buf = filebin ('modules/filebin.so')) != false )
+if ( ($buf = filemagic ('modules/magic.so')) != false )
     echo "$buf\n";
 ?>
 
@@ -103,7 +103,7 @@ ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, Buil
 **Execute with custom MAGIC file** :
 ```php
 <?php
-if ( ($buf = filebin ('modules/filebin.so', '/usr/share/misc/magic.mgc')) != false )
+if ( ($buf = filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
 ?>
 
@@ -113,7 +113,7 @@ ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, Buil
 
 **Get only file mime type** :
 ```php
-if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME_ENCODING)) != false )
+if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME_ENCODING)) != false )
     echo "$buf\n";
 ?>
 
@@ -123,7 +123,7 @@ binary
 
 **Get only file mime type with custom MAGIC file** :
 ```php
-if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
+if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
 ?>
 
@@ -133,7 +133,7 @@ application/x-sharedlib; charset=binary
 
 **Can enable to swap 2th and 3th argument each other** :
 ```php
-if ( ($buf = filebin ('modules/filebin.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
+if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.mgc')) != false )
     echo "$buf\n";
 ?>
 

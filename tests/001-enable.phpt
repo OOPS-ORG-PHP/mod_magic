@@ -1,8 +1,8 @@
 --TEST--
-Check for filebin presence
+Check for magic presence
 --SKIPIF--
 <?php
-if ( ! extension_loaded ('filebin') ) {
+if ( ! extension_loaded ('magic') ) {
     print 'skip';
 }
 ?>
@@ -11,7 +11,7 @@ if ( ! extension_loaded ('filebin') ) {
 --INI--
 --FILE--
 <?php
-echo "filebin extension is available";
+echo "magic extension is available";
 /*
         you can add regression tests for your extension here
 
@@ -25,4 +25,4 @@ echo "filebin extension is available";
 */
 ?>
 --EXPECT--
-filebin extension is available
+magic extension is available

@@ -1,7 +1,7 @@
 /*
- * php_filebin.h
+ * php_magic.h
  *
- * php filebin extension.
+ * php magic extension.
  *
  * JoungKyun.Kim, <http://oops.org>
  *
@@ -36,37 +36,37 @@
  *
  */
 
-#ifndef _MOD_FILEBIN_H
-#define _MOD_FILEBIN_H
+#ifndef _MOD_MAGIC_H
+#define _MOD_MAGIC_H
 
 #ifdef PHP_WIN32
-#define PHP_FILEBIN_API __declspec(dllexport)
+#define PHP_MAGIC_API __declspec(dllexport)
 #else
-#define PHP_FILEBIN_API
+#define PHP_MAGIC_API
 #endif
 
 #include "TSRM.h"
 
-extern zend_module_entry filebin_module_entry;
-#define filebin_module_ptr &filebin_module_entry
+extern zend_module_entry magic_module_entry;
+#define magic_module_ptr &magic_module_entry
 
-PHP_MINIT_FUNCTION(filebin);
-PHP_MSHUTDOWN_FUNCTION(filebin);
-PHP_RINIT_FUNCTION(filebin);
-PHP_RSHUTDOWN_FUNCTION(filebin);
-PHP_MINFO_FUNCTION(filebin);
+PHP_MINIT_FUNCTION(magic);
+PHP_MSHUTDOWN_FUNCTION(magic);
+PHP_RINIT_FUNCTION(magic);
+PHP_RSHUTDOWN_FUNCTION(magic);
+PHP_MINFO_FUNCTION(magic);
 
-PHP_FUNCTION(filebin);
+ZEND_FUNCTION(filemagic);
 
 #ifdef ZTS
-#define FILEBIN_G(v) TSRMG(filebin_globals_id, zend_filebin_globals *, v)
+#define MAGIC_G(v) TSRMG(magic_globals_id, zend_magic_globals *, v)
 #else
-#define FILEBIN_G(v) (filebin_globals.v)
+#define MAGIC_G(v) (magic_globals.v)
 #endif
 
-#define FILEBIN_BUILDVER "3.0.1"
+#define MAGIC_BUILDVER "3.0.1"
 
-#define phpext_filebin_ptr filebin_module_ptr
+#define phpext_magic_ptr magic_module_ptr
 
 #if PHP_VERSION_ID >= 80000
 #define TSRMLS_CC
@@ -89,7 +89,7 @@ PHP_FUNCTION(filebin);
 #endif
 */
 
-#endif  /* _MOD_FILEBIN_H */
+#endif  /* _MOD_MAGIC_H */
 
 /*
  * Local variables:

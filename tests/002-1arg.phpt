@@ -1,8 +1,8 @@
 --TEST--
-Check for execute with filebin ('modules/filebin.so')
+Check for execute with magic ('modules/magic.so')
 --SKIPIF--
 <?php
-if ( ! extension_loaded ('filebin') ) {
+if ( ! extension_loaded ('magic') ) {
     print 'skip';
 }
 ?>
@@ -12,11 +12,11 @@ if ( ! extension_loaded ('filebin') ) {
 --FILE--
 <?php
 
-if ( filebin ('modules/filebin.so') == false )
+if ( filemagic ('modules/magic.so') == false )
 	echo 'skip';
 else
-	echo "filebin ('modules/filebin.so') success";
+	echo "filemagic ('modules/magic.so') success";
 
 ?>
 --EXPECT--
-filebin ('modules/filebin.so') success
+filemagic ('modules/magic.so') success

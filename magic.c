@@ -1,5 +1,5 @@
 /*
- * filebin.c
+ * magic.c
  *
  * JoungKyun.Kim, <http://oops.org>
  *
@@ -54,71 +54,68 @@
 
 #include <fcntl.h>
 #include <magic.h>
-#include "php_filebin.h"
+#include "php_magic.h"
 /* }}} */
 
-#if PHP_API_VERSION < 20151012
+#if PHP_VERSION_ID < 70000
 #error "************ PHP version dependency problems *******************"
 #error "This package requires over php 7.0.0 !!"
-#error "If you build with php under 7.0.0, use mod_filebin 2.x version"
-#error "You can download mod_filebin 2.x at https://github.com/OOPS-ORG-PHP/mod_filebin/releases"
+#error "If you build with php under 7.0.0, use mod_magic 2.x version"
+#error "You can download mod_magic 2.x at https://github.com/OOPS-ORG-PHP/mod_magic/releases"
 #endif
 
-#if HAVE_FILEBIN
+#if HAVE_MAGIC
 
 /* True global resources - no need for thread safety here */
-static int le_filebin;
+static int le_magic;
 
-#include "filebin_arginfo.h"
+#include "magic_arginfo.h"
 
-/* {{{ filebin_functions[]
+/* {{{ magic_functions[]
  *
- * Every user visible function must have an entry in filebin_functions[].
+ * Every user visible function must have an entry in magic_functions[].
  */
-const zend_function_entry filebin_functions[] = {
-	PHP_FE(filebin, arginfo_filebin)
+const zend_function_entry magic_functions[] = {
+	ZEND_FE(filemagic, arginfo_filemagic)
 	{NULL, NULL, NULL}
 };
 /* }}} */
 
-/* {{{ filebin_module_entry
+/* {{{ magic_module_entry
  */
-zend_module_entry filebin_module_entry = {
-#if ZEND_MODULE_API_NO >= 20010901
+zend_module_entry magic_module_entry = {
 	STANDARD_MODULE_HEADER,
-#endif
-	"filebin",
-	filebin_functions,
-	PHP_MINIT(filebin),
+	"magic",
+	magic_functions,
+	PHP_MINIT(magic),
 	NULL,
 	NULL,
 	NULL,
-	PHP_MINFO(filebin),
-#if ZEND_MODULE_API_NO >= 20010901
-	FILEBIN_BUILDVER,
-#endif
+	PHP_MINFO(magic),
+	MAGIC_BUILDVER,
 	STANDARD_MODULE_PROPERTIES,
 };
 /* }}} */
 
-#ifdef COMPILE_DL_FILEBIN
-ZEND_GET_MODULE(filebin)
+#ifdef COMPILE_DL_MAGIC
+ZEND_GET_MODULE(magic)
 #endif
 
 /* {{{ PHP_MINFO_FUNCTION
  */
-PHP_MINFO_FUNCTION(filebin)
+PHP_MINFO_FUNCTION(magic)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "filebin support", "enabled");
-	php_info_print_table_row(2, "Build version", FILEBIN_BUILDVER);
+	php_info_print_table_header(2, "file magic support", "enabled");
+	php_info_print_table_row(2, "Build version", MAGIC_BUILDVER);
+	php_info_print_table_row(2, "URL", "https://github.com/OOPS-ORG-PHP/mod_magic");
 	php_info_print_table_end();
 }
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
-PHP_MINIT_FUNCTION(filebin)
+PHP_MINIT_FUNCTION(magic)
 {
 	// magic flags
 	REGISTER_LONG_CONSTANT ("MAGIC_NONE", MAGIC_NONE, CONST_PERSISTENT | CONST_CS);
@@ -151,10 +148,10 @@ PHP_MINIT_FUNCTION(filebin)
 }
 /* }}} */
 
-/* {{{ proto filebin(string path[, int flag[, string magic-path]]): string|false
- *     proto filebin(string path[, string magic-path[, int flag]]): string|false
+/* {{{ proto filemagic(string path[, int flag[, string magic-path]]): string|false
+ *     proto filemagic(string path[, string magic-path[, int flag]]): string|false
  */
-PHP_FUNCTION(filebin) {
+ZEND_FUNCTION(filemagic) {
 	zval         * zflag;
 	zval         * zpath; // path of Magic file
 	zend_string  * path = NULL;
@@ -166,7 +163,7 @@ PHP_FUNCTION(filebin) {
 	               fargs = ZEND_NUM_ARGS ();
 
 	struct stat    filestat;
-	struct magic_set * magic = NULL;
+	struct magic_set * mp = NULL;
 
 
 	HashTable    * args_arr = NULL;
@@ -223,30 +220,30 @@ PHP_FUNCTION(filebin) {
 	if ( flag )
 		flags |= flag;
 
-	magic = magic_open (flag);
-	if ( magic == NULL ) {
+	mp = magic_open (flag);
+	if ( mp == NULL ) {
 		php_error (E_WARNING, strerror (errno));
 		RETURN_FALSE;
 	}
 
-	if ( magic_load (magic, mpath) == -1 ) {
-		php_error (E_WARNING, magic_error (magic));
-		magic_close (magic);
+	if ( magic_load (mp, mpath) == -1 ) {
+		php_error (E_WARNING, magic_error (mp));
+		magic_close (mp);
 		RETURN_FALSE;
 	}
 
-	if ( (type = magic_file (magic, ZSTR_VAL (path))) == NULL ) {
-		php_error (E_WARNING, magic_error(magic));
-		magic_close (magic);
+	if ( (type = magic_file (mp, ZSTR_VAL (path))) == NULL ) {
+		php_error (E_WARNING, magic_error(mp));
+		magic_close (mp);
 		RETURN_FALSE;
 	}
 
 	RETVAL_STRING (type);
-	magic_close (magic);
+	magic_close (mp);
 }
 /* }}} */
 
-#endif	/* HAVE_FILEBIN */
+#endif	/* HAVE_MAGIC */
 
 /*
  * Local variables:

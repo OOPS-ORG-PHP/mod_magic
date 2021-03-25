@@ -42,6 +42,7 @@ case "${mode}" in
 
 			rm -f package.xml
 			find ./tests ! -name '*.phpt' -a ! -name '*.txt' -a -type f
+			rm -f magic_arginfo.h && git checkout -- magic_arginfo.h
 			----->
 		EOL
 
@@ -51,6 +52,7 @@ case "${mode}" in
 		rm -f config.h* config.nice configure* config.sub config.guess
 		rm -f install-sh ltmain.sh missing mkinstalldirs run-tests.php
 		rm -f tests/*.{diff,exp,log,out,php,sh,mem}
+		rm -f magic_arginfo.h && git checkout -- magic_arginfo.h
 		;;
 	pack)
 		cp -af package.xml.tmpl package.xml
@@ -73,10 +75,10 @@ case "${mode}" in
 		;;
 	test)
 		if [[ -f tests/${3}.php ]]; then
-			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=filebin.so" tests/${3}.php
+			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=magic" tests/${3}.php
 			exit $?
 		elif [[ -f ${3} ]]; then
-			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=filebin.so" ${3}
+			/usr/bin/php${2} -d "extension_dir=./modules/" -d "extension=magic" ${3}
 			exit $?
 		fi
 
@@ -99,7 +101,7 @@ case "${mode}" in
 			exit 1
 		fi
 		phpcmd="/usr/bin/php80"
-		perl -pi -e 's/ext_functions/filebin_functions/g' build/gen_stub.php
+		perl -pi -e 's/ext_functions/magic_functions/g' build/gen_stub.php
 		${phpcmd} build/gen_stub.php -f *.stub.php
 		;;
 	*)
