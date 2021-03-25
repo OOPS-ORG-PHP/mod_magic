@@ -1,5 +1,5 @@
 --TEST--
-Check for $php_errormsg variables
+Check for error_get_last function
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('magic') ) {
