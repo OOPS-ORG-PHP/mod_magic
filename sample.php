@@ -60,4 +60,23 @@ EOF;
 
 echo filemagic ('modules/magic.so', '/usr/share/misc/magic.mgc', MAGIC_MIME) . "\n";
 
+echo <<<EOF
+
+  *
+  * error controls:
+  *
+  * if ( filemagic ('wrong_path', MAGIC_MIME) == false ) {
+  *     ini_set ('track_errors', true);
+  *     echo "## php_errormsg : " . \$php_errormsg . "\\n";
+  *     print_r (error_get_last ());
+  * }
+  *
+  
+EOF;
+
+if ( filemagic ('wrong_path', MAGIC_MIME) == false ) {
+	ini_set ('track_errors', true);
+	echo "## php_errormsg : " . $php_errormsg . "\n";
+	print_r (error_get_last ());
+}
 ?>

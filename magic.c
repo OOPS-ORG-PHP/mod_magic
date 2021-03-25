@@ -148,6 +148,101 @@ PHP_MINIT_FUNCTION(magic)
 }
 /* }}} */
 
+/* {{{ static void magic_set_error (int type, const char * format, ...)
+ */
+static void magic_set_error (int type, const char * format, ...) {
+	va_list       args;
+	char        * buffer     = NULL;
+	int           buffer_len = 0;
+#if PHP_VERSION_ID >= 80000
+	zend_string * zbuffer;
+#endif
+
+	// php_error_cb in main.c
+	va_start (args, format);
+	buffer_len = vspprintf (&buffer, PG(log_errors_max_len), format, args);
+	va_end (args);
+
+#if PHP_VERSION_ID >= 80000
+	zbuffer = zend_string_init (buffer, buffer_len, 0);
+#endif
+
+#if PHP_VERSION_ID >= 80000
+	if (PG(last_error_message)) {
+		zend_string_release(PG(last_error_message));
+		PG(last_error_message) = NULL;
+	}
+	if (PG(last_error_file)) {
+		free(PG(last_error_file));
+		PG(last_error_file) = NULL;
+	}
+#else
+	if ( PG (last_error_message) ) {
+	#if PHP_VERSION_ID >= 70200
+		char * s = PG(last_error_message);
+		PG(last_error_message) = NULL;
+		free (s);
+	#else
+		free (PG (last_error_message));
+		PG (last_error_message) = NULL;
+	#endif
+	}
+	if ( PG(last_error_file) ) {
+	#if PHP_VERSION_ID >= 70200
+		char * s = PG(last_error_file);
+		PG(last_error_file) = NULL;
+		free (s);
+	#else
+		free (PG (last_error_file));
+		PG (last_error_file) = NULL;
+	#endif
+	}
+#endif
+	PG (last_error_lineno) = 0;
+
+	/*
+	 * last_error_file, last_error_lineno
+	 * see also zend_error in zend.c
+	 *   -> zend_get_compiled_filename
+	 *   -> zend_get_executed_lineno
+	 */
+	PG (last_error_type) = type;
+#if PHP_VERSION_ID >= 80000
+	PG (last_error_message) = zend_string_copy (zbuffer);
+	zend_string_release_ex (zbuffer, 0);
+#else
+	PG (last_error_message) = strdup (buffer);
+#endif
+	if ( zend_is_compiling () ) {
+		PG (last_error_file) = strdup (ZSTR_VAL (zend_get_compiled_filename ()));
+		PG (last_error_lineno) = zend_get_compiled_lineno ();
+	} else if ( zend_is_executing () ) {
+		PG (last_error_file) = strdup (zend_get_executed_filename ());
+		PG (last_error_lineno) = zend_get_executed_lineno ();
+	}
+
+#if PHP_VERSION_ID < 70200
+	/*
+	 * $php_errormsg don't support 7.2.0 and after.
+	 */
+	if ( PG(track_errors) ) {
+		zval tmp;
+
+		ZVAL_STRINGL(&tmp, buffer, buffer_len);
+		if (EG(current_execute_data)) {
+			if (zend_set_local_var_str("php_errormsg", sizeof("php_errormsg")-1, &tmp, 0) == FAILURE) {
+				zval_ptr_dtor(&tmp);
+			}
+		} else {
+			zend_hash_str_update_ind(&EG(symbol_table), "php_errormsg", sizeof("php_errormsg")-1, &tmp);
+		}
+	}
+#endif
+	if ( buffer_len > 0 )
+		efree (buffer);
+}
+/* }}} */
+
 /* {{{ proto filemagic(string path[, int flag[, string magic-path]]): string|false
  *     proto filemagic(string path[, string magic-path[, int flag]]): string|false
  */
@@ -180,12 +275,12 @@ ZEND_FUNCTION(filemagic) {
 		return;
 
 	if ( ZSTR_LEN (path) == 0 ) {
-		php_error (E_WARNING, "The value of 1st argument was empty.");
+		magic_set_error (E_WARNING, "The value of 1st argument was empty.");
 		RETURN_FALSE;
 	}
 
 	if ( stat (ZSTR_VAL (path), &filestat) != 0 ) {
-		php_error (E_WARNING, "%s file not found.", ZSTR_VAL (path));
+		magic_set_error (E_WARNING, "%s file not found.", ZSTR_VAL (path));
 		RETURN_FALSE;
 	}
 
@@ -202,7 +297,7 @@ ZEND_FUNCTION(filemagic) {
 				mpath = MAGIC;
 				break;
 			default :
-				php_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
+				magic_set_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
 				RETURN_FALSE;
 		}
 	} else if ( fargs == 3 ) {
@@ -213,7 +308,7 @@ ZEND_FUNCTION(filemagic) {
 			flag = Z_LVAL_P (zpath);
 			mpath = Z_STRLEN_P (zflag) ? Z_STRVAL_P (zflag) : MAGIC;
 		} else {
-			php_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
+			magic_set_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
 			RETURN_FALSE;
 		}
 	}
@@ -223,18 +318,18 @@ ZEND_FUNCTION(filemagic) {
 
 	mp = magic_open (flag);
 	if ( mp == NULL ) {
-		php_error (E_WARNING, strerror (errno));
+		magic_set_error (E_WARNING, strerror (errno));
 		RETURN_FALSE;
 	}
 
 	if ( magic_load (mp, mpath) == -1 ) {
-		php_error (E_WARNING, magic_error (mp));
+		magic_set_error (E_WARNING, magic_error (mp));
 		magic_close (mp);
 		RETURN_FALSE;
 	}
 
 	if ( (type = magic_file (mp, ZSTR_VAL (path))) == NULL ) {
-		php_error (E_WARNING, magic_error(mp));
+		magic_set_error (E_WARNING, magic_error(mp));
 		magic_close (mp);
 		RETURN_FALSE;
 	}
