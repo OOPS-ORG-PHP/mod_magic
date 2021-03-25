@@ -144,6 +144,65 @@ PHP_MINIT_FUNCTION(magic)
 }
 /* }}} */
 
+/* {{{ static void magic_set_error (int type, const char * format, ...)
+ */
+static void magic_set_error (int type, const char * format, ...) {
+	va_list args;
+	char * buffer     = NULL;
+	int    buffer_len = 0;
+	TSRMLS_FETCH ();
+
+	// php_error_cb in main.c
+	va_start (args, format);
+	buffer_len = vspprintf (&buffer, PG(log_errors_max_len), format, args);
+	va_end (args);
+
+	if ( PG (last_error_message) ) {
+		free (PG (last_error_message));
+		PG (last_error_message) = NULL;
+	}
+	if ( PG(last_error_file) ) {
+		free (PG (last_error_file));
+		PG (last_error_file) = NULL;
+	}
+	PG (last_error_lineno) = 0;
+
+	/*
+	 * last_error_file, last_error_lineno
+	 * see also zend_error in zend.c
+	 *   -> zend_get_compiled_filename
+	 *   -> zend_get_executed_lineno
+	 */
+	PG (last_error_type) = type;
+	PG (last_error_message) = strdup (buffer);
+	if ( zend_is_compiling (TSRMLS_C) ) {
+		PG (last_error_file) = strdup (zend_get_compiled_filename (TSRMLS_C));
+		PG (last_error_lineno) = zend_get_compiled_lineno (TSRMLS_C);
+	} else if ( zend_is_executing (TSRMLS_C) ) {
+		PG (last_error_file) = strdup (zend_get_executed_filename(TSRMLS_C));
+		PG (last_error_lineno) = zend_get_executed_lineno (TSRMLS_C);
+	}
+
+	if ( PG(track_errors) ) {
+		if (!EG (active_symbol_table)) {
+			zend_rebuild_symbol_table (TSRMLS_C);
+		}
+		if ( EG (active_symbol_table) ) {
+			zval * tmp;
+			ALLOC_INIT_ZVAL (tmp);
+			ZVAL_STRINGL (tmp, buffer, buffer_len, 1);
+			zend_hash_update (
+				EG (active_symbol_table), "php_errormsg", sizeof("php_errormsg"),
+				(void **) &tmp, sizeof(zval *), NULL
+			);
+		}
+	}
+	if ( buffer_len > 0 ) {
+		str_efree (buffer);
+	}
+}
+/* }}} */
+
 /* {{{ proto (string|null) filemagic(string path, int flag, string mpath)
  */ 
 PHP_FUNCTION(filemagic) {
@@ -176,12 +235,12 @@ PHP_FUNCTION(filemagic) {
 		return;
 
 	if ( path_len == 0 ) {
-		php_error (E_WARNING, "The value of 1st argument was empty.");
+		magic_set_error (E_WARNING, "The value of 1st argument was empty.");
 		RETURN_FALSE;
 	}
 
 	if ( stat (path, &filestat) != 0 ) {
-		php_error (E_WARNING, "%s file not found.", path);
+		magic_set_error (E_WARNING, "%s file not found.", path);
 		RETURN_FALSE;
 	}
 
@@ -198,18 +257,29 @@ PHP_FUNCTION(filemagic) {
 				mpath = MAGIC;
 				break;
 			default :
-				php_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
+				magic_set_error (E_WARNING, "2th argument is only available for integer(flag) or MAGIC file path.");
 				RETURN_FALSE;
 		}
 	} else if ( chkargs == 3 ) {
-		if ( Z_TYPE_P (zflag) == IS_LONG && Z_TYPE_P(zpath) == IS_STRING ) {
+		if ( Z_TYPE_P (zflag) == IS_LONG && Z_TYPE_P (zpath) == IS_STRING ) {
 			flag = Z_LVAL_P (zflag);
 			mpath = Z_STRLEN_P (zpath) ? Z_STRVAL_P (zpath) : MAGIC;
-		} else if ( Z_TYPE_P (zflag) == IS_STRING && Z_TYPE_P(zpath) == IS_LONG  ) {
+		} else if ( Z_TYPE_P (zflag) == IS_STRING && Z_TYPE_P (zpath) == IS_LONG  ) {
 			flag = Z_LVAL_P (zpath);
 			mpath = Z_STRLEN_P (zflag) ? Z_STRVAL_P (zflag) : MAGIC;
 		} else {
-			php_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
+			if ( Z_TYPE_P (zflag) == IS_LONG && Z_TYPE_P (zpath) != IS_STRING ) {
+				magic_set_error (
+					E_WARNING,
+					"If the 2th argument is an integer, the 3th argument must specify strings(magic path)."
+				);
+			} else {
+				magic_set_error (
+					E_WARNING,
+					"If the 2th argument is an stings, the 3th argument must specify integer (flag)."
+				);
+				magic_set_error (E_WARNING, "The 2th and 3th argument can only be integer or strings.");
+			}
 			RETURN_FALSE;
 		}
 	}
@@ -219,18 +289,18 @@ PHP_FUNCTION(filemagic) {
 
 	mp = magic_open (flag);
 	if ( mp == NULL ) {
-		php_error (E_WARNING, strerror (errno));
+		magic_set_error (E_WARNING, strerror (errno));
 		RETURN_FALSE;
 	}
 
 	if ( magic_load (mp, mpath) == -1 ) {
-		php_error (E_WARNING, magic_error (mp));
+		magic_set_error (E_WARNING, magic_error (mp));
 		magic_close (mp);
 		RETURN_FALSE;
 	}
 
 	if ( (type = magic_file (mp, path)) == NULL ) {
-		php_error (E_WARNING, magic_error(mp));
+		magic_set_error (E_WARNING, magic_error(mp));
 		magic_close (mp);
 		RETURN_FALSE;
 	}

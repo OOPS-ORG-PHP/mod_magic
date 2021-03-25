@@ -126,3 +126,30 @@ if ( ($buf = filemagic ('modules/magic.so', MAGIC_MIME, '/usr/share/misc/magic.m
 Result:
 application/x-sharedlib; charset=binary
 ```
+
+**filemagic function error control** :
+```php
+<?php
+if ( ($buf = filemagic ('wrong_path')) == false ) {
+	if ( version_comapre(PHP_VERSION, '7.2.0', '<') ) {
+	    ini_set ('track_errors', true)
+		printf ("ERROR: %s\n", $php_errormsg);
+	}
+	$err = error_get_last ();
+	print_r ($err);	
+}
+?>
+
+Result:
+ERROR: wrong_path file not found.
+Array
+(
+    [type] => 2
+    [message] => wrong_path file not found.
+    [file] => /some/path/test.php
+    [line] => 2
+)
+```
+- $php_errormsg must have the track_errors setting enabled.
+- $php_errormsg was deprecated in 7.2.0.
+- The filemagic function does not call any error handlers when an error occurs. However, the error message is assigned to $php_errormsg or error_get_last ().
