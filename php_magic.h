@@ -81,6 +81,10 @@ PHP_FUNCTION(filemagic);
 #	define OB_END_BUFFER php_end_ob_buffer(0, 0 TSRMLS_CC);
 #endif
 
+#if PHP_VERSION_ID < 50400
+#	define str_efree efree
+#endif
+
 #define MAGIC_FILE_SET 0
 #define MAGIC_DATA_SET 1
 
