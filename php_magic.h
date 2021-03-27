@@ -64,7 +64,7 @@ PHP_FUNCTION(filemagic);
 
 #endif
 
-#define MAGIC_BUILDVER "2.0.1"
+#define MAGIC_BUILDVER "2.0.2"
 
 #define phpext_magic_ptr magic_module_ptr
 
