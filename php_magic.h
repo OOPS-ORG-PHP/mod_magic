@@ -31,9 +31,6 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
- * $Id$
- *
  */
 
 #ifndef _MOD_MAGIC_H
@@ -71,6 +68,10 @@ PHP_FUNCTION(filemagic);
 
 #define phpext_magic_ptr magic_module_ptr
 
+#ifndef PHP_VERSION_ID
+#include "php_version_id.h"
+#endif
+
 #if PHP_VERSION_ID >= 50100
 #	define OB_START_BUFFER php_output_start_default(TSRMLS_C)
 #	define OB_GET_BUFFER php_output_get_contents
@@ -83,6 +84,12 @@ PHP_FUNCTION(filemagic);
 
 #if PHP_VERSION_ID < 50400
 #	define str_efree efree
+#endif
+
+#if PHP_VERSION_ID < 50300
+#	define MAGIC_RETVAL_STRING(x,y) RETVAL_STRING((char*)x,y)
+#else
+#	define MAGIC_RETVAL_STRING(x,y) RETVAL_STRING(x,y)
 #endif
 
 #define MAGIC_FILE_SET 0

@@ -96,7 +96,8 @@ if test "$PHP_MAGIC" != "no"; then
 
 	MAGIC_PREFIX_PATH="$PHP_MAGIC /usr /usr/local /opt/file /usr/local/file"
 
-	if test "$with_libdir" != "$PHP_LIBDIR"; then
+	test -z "$PHP_LIBDIR" && PHP_LIBDIR="lib"
+	if test "$with_libdir" != "$PHP_LIBDIR:-lib"; then
 		parch=`uname -m`
 		if test "$parch" == "x86_64"; then
 			if test -d /usr/lib64 || test -d /usr/local/lib64; then
@@ -107,7 +108,6 @@ if test "$PHP_MAGIC" != "no"; then
 			fi
 		fi
 	fi
-	test -z "$PHP_LIBDIR" && PHP_LIBDIR="lib"
 
 	MAGIC_PARAMETER=$CFLAGS
 	PHP_SUBST(CPPFLAGS)

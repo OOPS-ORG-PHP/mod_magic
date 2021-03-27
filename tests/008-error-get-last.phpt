@@ -12,6 +12,11 @@ if ( ! extension_loaded ('magic') ) {
 --FILE--
 <?php
 if ( filemagic ('modules/magic.so1') == false ) {
+	if ( version_compare (PHP_VERSION, '5.2.0', '<') ) {
+		# error_get_last function was added from PHP 5.2.0
+		echo "E_WARNING: modules/magic.so1 file not found.";
+		exit;
+	}
 	$p = error_get_last ();
 	if ( $p['type'] == E_WARNING )
 		$s = 'E_WARNING';

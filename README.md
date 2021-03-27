@@ -6,7 +6,9 @@ This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.f
 
 The filemagic function returns the same result as the result of the /bin/file command as a string.
 
-***The v2 branch*** supports PHP3 through PHP 5. For PHP 7 and above, use the mater branch.
+***The v2 branch*** supports PHP4.3 and PHP 5. For PHP 7 and above, use the mater branch.
+
+Since autotools version is too low, older versions, including PHP 4.2.0, are difficult to implement the QA environment. Therefore, it is officially supported from 4.3.
 
 ## Installation
 
@@ -158,8 +160,10 @@ if ( ($buf = filemagic ('wrong_path')) == false ) {
 	    ini_set ('track_errors', true)
 		printf ("ERROR: %s\n", $php_errormsg);
 	}
-	$err = error_get_last ();
-	print_r ($err);	
+	if ( version_compare (PHP_VERSION, '5.2.0', '>=') ) {
+		$err = error_get_last ();
+		print_r ($err);
+	}
 }
 ?>
 
@@ -175,4 +179,5 @@ Array
 ```
 - $php_errormsg must have the track_errors setting enabled.
 - $php_errormsg was deprecated in 7.2.0.
+- error_get_last () function is supported from 5.2.0 and after
 - The filemagic function does not call any error handlers when an error occurs. However, the error message is assigned to $php_errormsg or error_get_last ().

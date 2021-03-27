@@ -31,9 +31,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * See README, INSTALL, and USAGE files for more details.
- *
- * $Id$
- *
  */
 
 /* {{{ includes 
@@ -62,17 +59,24 @@
 /* True global resources - no need for thread safety here */
 static int le_magic;
 
+#if PHP_VERSION_ID < 50000
+static unsigned char arginfo_magic[] = { 3, BYREF_NONE, BYREF_NONE, BYREF_NONE };
+#else
 ZEND_BEGIN_ARG_INFO_EX(arginfo_magic, 0, 0, 1)
 	ZEND_ARG_INFO(0, path)
 	ZEND_ARG_INFO(0, flag)
 	ZEND_ARG_INFO(0, mpath)
 ZEND_END_ARG_INFO()
+#endif
 
 /* {{{ magic_functions[]
  *
  * Every user visible function must have an entry in magic_functions[].
  */
-const zend_function_entry magic_functions[] = {
+#if PHP_VERSION_ID >= 50300
+const
+#endif
+zend_function_entry magic_functions[] = {
 	PHP_FE(filemagic, arginfo_magic)
 	PHP_FALIAS(filebin, filemagic, arginfo_magic)
 	{NULL, NULL, NULL}
@@ -158,6 +162,7 @@ static void magic_set_error (int type, const char * format, ...) {
 	buffer_len = vspprintf (&buffer, PG(log_errors_max_len), format, args);
 	va_end (args);
 
+#if PHP_VERSION_ID >= 50200
 	if ( PG (last_error_message) ) {
 		free (PG (last_error_message));
 		PG (last_error_message) = NULL;
@@ -174,7 +179,9 @@ static void magic_set_error (int type, const char * format, ...) {
 	 *   -> zend_get_compiled_filename
 	 *   -> zend_get_executed_lineno
 	 */
+#if PHP_VERSION_ID > 50200
 	PG (last_error_type) = type;
+#endif
 	PG (last_error_message) = strdup (buffer);
 	if ( zend_is_compiling (TSRMLS_C) ) {
 		PG (last_error_file) = strdup (zend_get_compiled_filename (TSRMLS_C));
@@ -183,30 +190,59 @@ static void magic_set_error (int type, const char * format, ...) {
 		PG (last_error_file) = strdup (zend_get_executed_filename(TSRMLS_C));
 		PG (last_error_lineno) = zend_get_executed_lineno (TSRMLS_C);
 	}
+#endif
 
 	if ( PG(track_errors) ) {
+#if PHP_VERSION_ID >= 50300
 		if (!EG (active_symbol_table)) {
 			zend_rebuild_symbol_table (TSRMLS_C);
 		}
+#endif
 		if ( EG (active_symbol_table) ) {
+#if PHP_VERSION_ID < 50000
+			pval *tmp;
+			ALLOC_ZVAL (tmp);
+			INIT_PZVAL (tmp);
+	#if PHP_VERSION_ID < 40200
+			tmp->value.str.val = (char *) estrndup (buffer, buffer_len);
+			tmp->value.str.len = buffer_len;
+			tmp->type = IS_STRING;
+	#else
+			Z_STRVAL_P (tmp) = (char *) estrndup (buffer, buffer_len);
+			Z_STRLEN_P (tmp) = buffer_len;
+			Z_TYPE_P (tmp)   = IS_STRING;
+	#endif
+			zend_hash_update (
+				EG (active_symbol_table), "php_errormsg", sizeof("php_errormsg"),
+				(void **) &tmp, sizeof(pval *), NULL
+			);
+#else /* PHP_VERSION_ID > 50000 */
 			zval * tmp;
+	#if PHP_VERSION_ID > 50100
 			ALLOC_INIT_ZVAL (tmp);
 			ZVAL_STRINGL (tmp, buffer, buffer_len, 1);
+	#else
+			ALLOC_ZVAL(tmp);
+			INIT_PZVAL(tmp);
+			Z_STRVAL_P(tmp) = (char *) estrndup(buffer, buffer_len);
+			Z_STRLEN_P(tmp) = buffer_len;
+			Z_TYPE_P(tmp)   = IS_STRING;
+	#endif
 			zend_hash_update (
 				EG (active_symbol_table), "php_errormsg", sizeof("php_errormsg"),
 				(void **) &tmp, sizeof(zval *), NULL
 			);
+#endif
 		}
 	}
-	if ( buffer_len > 0 ) {
+
+	if ( buffer_len > 0 )
 		str_efree (buffer);
-	}
 }
 /* }}} */
 
 /* {{{ proto (string|null) filemagic(string path, int flag, string mpath)
- */ 
-PHP_FUNCTION(filemagic) {
+ */ PHP_FUNCTION(filemagic) {
 	zval         * zflag;
 	zval         * zpath;
 	char         * path = NULL;
@@ -323,7 +359,7 @@ PHP_FUNCTION(filemagic) {
 		RETURN_FALSE;
 	}
 
-	RETVAL_STRING (buf, 1);
+	MAGIC_RETVAL_STRING (buf, 1);
 	magic_close (mp);
 }
 /* }}} */
