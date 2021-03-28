@@ -1,35 +1,17 @@
 #!/bin/bash
 
 source /usr/share/annyung-release/functions.d/bash/functions
+setAnsi
+tcolor="${bblack}${bgwhite}"
 
 errmsg () {
 	echo "$*" 1>&2
 }
 
 usage () {
-	echo "Usage: $0 [clean|pack|test [php-version]]"
+	echo "${bcyan}Usage:${normal} $0 [clean|pack|test [php-version]]"
 	exit 1
 }
-
-normal="$( tput sgr0 )"
-bold="$( tput bold )"
-black="$( tput setaf 0 )"
-red="$( tput setaf 1 )"
-green="$( tput setaf 2 )"
-yellow="$( tput setaf 3 )"
-blue="$( tput setaf 4 )"
-megenta="$( tput setaf 5 )"
-cyan="$( tput setaf 6 )"
-white="$( tput setaf 7 )"
-bblack="${bold}${black}"
-bred="${bold}${red}"
-bgreen="${bold}${green}"
-byellow="${bold}${yellow}"
-bblue="${bold}${blue}"
-bmegenta="${bold}${megenta}"
-bcyan="${bold}${cyan}"
-bwhite="${bold}${white}"
-tcolor="${bblack}$( tput setab 7 )"
 
 opts=$(getopt -u -o h -l help -- "$@")
 [ $? != 0 ] && usage
@@ -62,8 +44,8 @@ case "${mode}" in
 
 			rm -f package.xml
 			find ./tests ! -name '*.phpt' -a ! -name '*.txt' -a -type f
-			rm -f magic_arginfo.h && git checkout -- magic_arginfo.h${normal}
-			----->
+			rm -f magic_arginfo.h && git checkout -- magic_arginfo.h
+			${normal}----->
 		EOL
 
 		[ -f Makefile ] && make distclean
