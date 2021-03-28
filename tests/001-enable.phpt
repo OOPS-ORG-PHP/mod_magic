@@ -3,7 +3,13 @@ Check for magic presence
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('magic') ) {
-    print 'skip';
+	if ( version_compare(PHP_VERSION, "5.1.0", "<") ) {
+		dl ('magic.so');
+		if ( ! extension_loaded ('magic') )
+    		print 'skip';
+	} else {
+		print 'skip';
+	}
 }
 ?>
 --POST--

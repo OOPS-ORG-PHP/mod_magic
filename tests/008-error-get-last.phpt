@@ -3,7 +3,13 @@ Check for error_get_last function
 --SKIPIF--
 <?php
 if ( ! extension_loaded ('magic') ) {
-    print 'skip';
+	if ( version_compare(PHP_VERSION, "5.1.0", "<") ) {
+		dl ('magic.so');
+		if ( ! extension_loaded ('magic') )
+    		print 'skip';
+	} else {
+		print 'skip';
+	}
 }
 ?>
 --POST--
@@ -11,6 +17,9 @@ if ( ! extension_loaded ('magic') ) {
 --INI--
 --FILE--
 <?php
+if ( version_compare(PHP_VERSION, "5.1.0", "<") )
+	dl ('magic.so');
+
 if ( filemagic ('modules/magic.so1') == false ) {
 	if ( version_compare (PHP_VERSION, '5.2.0', '<') ) {
 		# error_get_last function was added from PHP 5.2.0

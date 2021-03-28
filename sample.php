@@ -15,10 +15,11 @@ if ( ! extension_loaded ('magic') ) {
 	if ( version_compare (PHP_VERSION, '5.4.0', '>') ) {
 		fprintf (STDERR, "magic extension is not loaded\n");
 		exit (1);
-	} else if ( version_compare (PHP_VERSION, '5.3.0', '<') )
+	} else if ( version_compare (PHP_VERSION, '5.3.0', '<') ) {
 		dl ('magic.so');
-	else
+	} else {
 		dl ('./modules/magic.so');
+	}
 }
 
 echo <<<EOF

@@ -13,6 +13,8 @@ usage () {
 	exit 1
 }
 
+mod_name="$( grep "^ZEND_GET_MODULE" *.c | grep -Po '(?<=\()[a-z]+(?=\))' )"
+
 opts=$(getopt -u -o h -l help -- "$@")
 [ $? != 0 ] && usage
 
@@ -80,6 +82,7 @@ case "${mode}" in
 		PHPIZE=/opt/php-qa/php${2}/bin/phpize
 		PHPCONFIG=/opt/php-qa/php${2}/bin/php-config
 		PHP_OPT=""
+		LEGACY_TEST=0
 
 		#PHP_VERSION_ID="$(
 		#	${PHPCONFIG} --version | awk '{ printf ("%d%02d%02d", $1, $2, $3); }' FS="."
@@ -91,12 +94,13 @@ case "${mode}" in
 			${PHPIZE} && ./configure && make -j8 || exit 0
 
 			if [[ ! -f ./run-tests.php ]]; then
-				set $( echo "${1} ${2} sample.php" )
-				PHP_OPT="-n -d 'enable_dl=1' -d 'safe_mode=0'"
+				#set $( echo "${1} ${2} sample.php" )
+				LEGACY_TEST=1
+				PHP_OPT="-n -d 'enable_dl=1' -d 'safe_mode=0' -d disable_error=0"
 			fi
 		fi
 
-		PHP_OPT+=" -d 'track_errors=1' -d 'extension_dir=./modules/' -d 'extension=magic.so'"
+		PHP_OPT+=" -d 'track_errors=1' -d 'extension_dir=./modules/' -d 'extension=${mod_name}'"
 
 		if [[ -f tests/${3}.php ]]; then
 			cat <<-EOL
@@ -133,7 +137,9 @@ case "${mode}" in
 			${bwhite}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~${normal}
 
 		EOL
-		make test PHP_EXECUTABLE=${PHPBIN} <<< n
+		(( LEGACY_TEST == 1 ))                                                   \
+			&& PHP_EXECUTABLE=${PHPBIN} bash /opt/php-qa/TEST-ENV/legacy-test.sh \
+			|| make test PHP_EXECUTABLE=${PHPBIN} <<< n
 
 		exit $?;
 		;;
