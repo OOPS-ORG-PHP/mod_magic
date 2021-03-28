@@ -2,9 +2,9 @@
 
 ## Description
 
-This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one filemagic function is provided to make it a simple use.
+This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one **filemagic** function is provided to make it a simple use.
 
-The filemagic function returns the same result as the result of the /bin/file command as a string.
+The **filemagic** function returns the same result as the result of the /bin/file command as a string.
 
 ## Installation
 
@@ -159,7 +159,7 @@ text/x-c; charset=us-ascii
 <?php
 if ( ($buf = filemagic ('wrong_path')) == false ) {
 	if ( version_comapre(PHP_VERSION, '7.2.0', '<') ) {
-	    ini_set ('track_errors', true)
+	    //ini_set ('track_errors', true) -> track_errors is SYSTEM_INI, so can't set with ini_set
 		printf ("ERROR: %s\n", $php_errormsg);
 	}
 	$err = error_get_last ();
@@ -177,6 +177,6 @@ Array
     [line] => 2
 )
 ```
-- $php_errormsg must have the track_errors setting enabled.
-- $php_errormsg was deprecated in 7.2.0.
-- The filemagic function does not call any error handlers when an error occurs. However, the error message is assigned to $php_errormsg or error_get_last ().
+- [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) must have the [track_errors](https://www.php.net/manual/en/errorfunc.configuration.php#ini.track-errors) setting enabled.
+- [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) was deprecated in 7.2.0.
+- The filemagic function does not call any error handlers when an error occurs. However, the error message is assigned to [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) or [error_get_last ()](https://www.php.net/manual/en/function.error-get-last.php).
