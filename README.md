@@ -2,7 +2,7 @@
 
 ## Description
 
-This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one FileBin function is provided to make it a simple use.
+This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one filemagic function is provided to make it a simple use.
 
 The filemagic function returns the same result as the result of the /bin/file command as a string.
 
