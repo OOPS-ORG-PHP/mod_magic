@@ -64,7 +64,7 @@ ZEND_FUNCTION(filemagic);
 #define MAGIC_G(v) (magic_globals.v)
 #endif
 
-#define MAGIC_BUILDVER "3.0.1"
+#define MAGIC_BUILDVER "3.0.2"
 
 #define phpext_magic_ptr magic_module_ptr
 
