@@ -100,7 +100,7 @@ case "${mode}" in
 			fi
 		fi
 
-		PHP_OPT+=" -d 'track_errors=1' -d 'extension_dir=./modules/' -d 'extension=${mod_name}'"
+		PHP_OPT+=" -d 'track_errors=1' -d 'extension_dir=./modules/' -d 'extension=${mod_name}.so'"
 
 		if [[ -f tests/${3}.php ]]; then
 			cat <<-EOL
