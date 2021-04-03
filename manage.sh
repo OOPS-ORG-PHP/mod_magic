@@ -81,12 +81,15 @@ case "${mode}" in
 		PHPBIN=/opt/php-qa/php${2}/bin/php
 		PHPIZE=/opt/php-qa/php${2}/bin/phpize
 		PHPCONFIG=/opt/php-qa/php${2}/bin/php-config
-		PHP_OPT=""
+		PHP_OPT="-n"
 		LEGACY_TEST=0
 
 		#PHP_VERSION_ID="$(
 		#	${PHPCONFIG} --version | awk '{ printf ("%d%02d%02d", $1, $2, $3); }' FS="."
 		#)"
+
+		${PHPBIN} -i | grep -q "^safe_mode =>"
+		[[ $? == 0 ]] && PHP_OPT+=" -d 'safe_mode=0'"
 
 		if [[ $# == 2 ]]; then
 			./manage.sh clean
@@ -96,7 +99,7 @@ case "${mode}" in
 			if [[ ! -f ./run-tests.php ]]; then
 				#set $( echo "${1} ${2} sample.php" )
 				LEGACY_TEST=1
-				PHP_OPT="-n -d 'enable_dl=1' -d 'safe_mode=0' -d disable_error=0"
+				PHP_OPT="-d 'enable_dl=1' -d disable_error=0"
 			fi
 		fi
 
