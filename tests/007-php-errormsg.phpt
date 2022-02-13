@@ -5,11 +5,17 @@ Check for $php_errormsg variables
 if ( ! extension_loaded ('magic') ) {
     print 'skip';
 }
+# Since PHP 8.0, track_errors is removed, so force skip test
+if ( version_compare (PHP_VERSION, '8.0.0', '>=') ) {
+	print 'skip';
+}
 ?>
 --POST--
 --GET--
 --INI--
 track_errors=1
+; for track_errors deprecate on PHP 7.2 and after
+error_reporting = E_ALL & ~E_DEPRECATED
 --FILE--
 <?php
 

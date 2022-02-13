@@ -79,7 +79,7 @@ case "${mode}" in
 		PHPBIN=/opt/php-qa/php${2}/bin/php
 		PHPIZE=/opt/php-qa/php${2}/bin/phpize
 		PHPCONFIG=/opt/php-qa/php${2}/bin/php-config
-		PHP_OPT=""
+		PHP_OPT="-n"
 
 		if [[ $# == 2 ]]; then
 			./manage.sh clean
@@ -87,7 +87,11 @@ case "${mode}" in
 			${PHPIZE} && ./configure && make -j8 || exit 0
 		fi
 
-		PHP_OPT+=" -d 'track_errors=1' -d 'extension_dir=./modules/' -d 'extension=magic.so'"
+		if (( $2 > 71 )); then
+			PHP_OPT+=" -d 'extension_dir=./modules/' -d 'extension=magic.so'"
+		else
+			PHP_OPT+=" -d 'track_errors=1' -d 'extension_dir=./modules/' -d 'extension=magic.so'"
+		fi
 
 		if [[ -f tests/${3}.php ]]; then
 			cat <<-EOL
