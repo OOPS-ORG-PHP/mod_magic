@@ -4,11 +4,19 @@
 
 This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one **filemagic** function is provided to make it a simple use.
 
+The original name of this package is ```mod_filebin```. It has been changed to ```mod_magic``` since 2.0.1.
+
 The **filemagic** function returns the same result as the result of the /bin/file command as a string.
 
-***The v2 branch*** supports PHP4.3 and PHP 5. For PHP 7 and above, use the mater branch.
+***The v2 branch*** supports PHP4.3 and PHP 5. For PHP 7 and above, use the ```master``` or 3.x branch.
 
 Since autotools version is too low, older versions, including PHP 4.2.0, are difficult to implement the QA environment. Therefore, it is officially supported from 4.3.
+
+## Requreis
+
+```PHP >= 7```
+
+Do download v2.x branch for PHP 5 and before.
 
 ## Installation
 
