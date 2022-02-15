@@ -155,50 +155,52 @@ static void magic_set_error (int type, const char * format, ...) {
 	va_list       args;
 	char        * buffer     = NULL;
 	int           buffer_len = 0;
+	size_t        maxlen = 0;
 #if PHP_VERSION_ID >= 80000
 	zend_string * zbuffer;
 #endif
 
 	// php_error_cb in main.c
 	va_start (args, format);
-	buffer_len = vspprintf (&buffer, PG(log_errors_max_len), format, args);
+#if PHP_VERSION_ID < 80100
+	maxlen = PG(log_errors_max_len);
+#endif
+	buffer_len = vspprintf (&buffer, maxlen, format, args);
 	va_end (args);
 
 #if PHP_VERSION_ID >= 80000
 	zbuffer = zend_string_init (buffer, buffer_len, 0);
 #endif
 
-#if PHP_VERSION_ID >= 80000
-	if (PG(last_error_message)) {
-		zend_string_release(PG(last_error_message));
-		PG(last_error_message) = NULL;
-	}
-	if (PG(last_error_file)) {
-		free(PG(last_error_file));
-		PG(last_error_file) = NULL;
-	}
-#else
 	if ( PG (last_error_message) ) {
-	#if PHP_VERSION_ID >= 70200
-		char * s = PG(last_error_message);
-		PG(last_error_message) = NULL;
-		free (s);
-	#else
-		free (PG (last_error_message));
+#if PHP_VERSION_ID >= 80000
+		zend_string_release (PG (last_error_message));
+#elif PHP_VERSION_ID >= 70200
+		char * s = PG (last_error_message);
 		PG (last_error_message) = NULL;
-	#endif
-	}
-	if ( PG(last_error_file) ) {
-	#if PHP_VERSION_ID >= 70200
-		char * s = PG(last_error_file);
-		PG(last_error_file) = NULL;
 		free (s);
-	#else
-		free (PG (last_error_file));
-		PG (last_error_file) = NULL;
-	#endif
-	}
+#else
+		free (PG (last_error_message));
 #endif
+		PG(last_error_file) = NULL;
+	}
+
+	if ( PG (last_error_file) ) {
+#if PHP_VERSION_ID >= 80100
+		zend_string_release (PG (last_error_file));
+#elif PHP_VERSION_ID >= 80000
+		free (PG (last_error_file));
+#elif PHP_VERSION_ID >= 70200
+		char * s = PG (last_error_file);
+		PG (last_error_file) = NULL;
+		free (s);
+#else
+		free (PG (last_error_file));
+#endif
+		PG (last_error_file) = NULL;
+	}
+
+
 	PG (last_error_lineno) = 0;
 
 	/*
@@ -215,10 +217,18 @@ static void magic_set_error (int type, const char * format, ...) {
 	PG (last_error_message) = strdup (buffer);
 #endif
 	if ( zend_is_compiling () ) {
+#if PHP_VERSION_ID >= 80100
+		PG (last_error_file) = zend_string_copy (zend_get_compiled_filename ());
+#else
 		PG (last_error_file) = strdup (ZSTR_VAL (zend_get_compiled_filename ()));
+#endif
 		PG (last_error_lineno) = zend_get_compiled_lineno ();
 	} else if ( zend_is_executing () ) {
+#if PHP_VERSION_ID >= 80100
+		PG (last_error_file) = zend_string_copy (zend_get_executed_filename_ex ());
+#else
 		PG (last_error_file) = strdup (zend_get_executed_filename ());
+#endif
 		PG (last_error_lineno) = zend_get_executed_lineno ();
 	}
 

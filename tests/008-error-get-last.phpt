@@ -16,7 +16,7 @@ if ( filemagic ('modules/magic.so1') == false ) {
 	if ( $p['type'] == E_WARNING )
 		$s = 'E_WARNING';
 	else
-		$s = 'E_UNKNONW';
+		$s = 'E_UNKNOWN';
 	printf ("%s: %s\n", $s, $p['message']);
 }
 ?>
