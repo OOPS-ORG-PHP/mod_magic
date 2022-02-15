@@ -178,5 +178,5 @@ Array
 )
 ```
 - [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) must have the [track_errors](https://www.php.net/manual/en/errorfunc.configuration.php#ini.track-errors) setting enabled.
-- [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) was deprecated in 7.2.0.
+- [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) was deprecated in 7.2.0 and removed in 8.0.0
 - The filemagic function does not call any error handlers when an error occurs. However, the error message is assigned to [$php_errormsg](https://www.php.net/manual/en/reserved.variables.phperrormsg.php) or [error_get_last ()](https://www.php.net/manual/en/function.error-get-last.php).
