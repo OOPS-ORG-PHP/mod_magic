@@ -4,7 +4,11 @@
 
 This extension is similar to the [fileinfo](https://www.php.net/manual/en/book.fileinfo.php) extension, but only one **filemagic** function is provided to make it a simple use.
 
+The original name of this package is ```mod_filebin```. It has been changed to ```mod_magic``` since 3.0.1.
+
 The **filemagic** function returns the same result as the result of the /bin/file command as a string.
+
+***The master branch*** supports PHP 7 and above. For PHP4.3 to PHP 5, use the ```v2``` or ```2.x``` branch.
 
 ## Installation
 
